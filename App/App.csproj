@@ -9,8 +9,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include = "..\NVG\NVG.csproj" />
-    <ProjectReference Include = "..\Window\Window.csproj" />
+    <ProjectReference Include = "..\pixel\Pixel\Pixel.csproj" />
+    <ProjectReference Include = "..\pixel\Pixel.GLES\Pixel.GLES.csproj" />
   </ItemGroup>
 
   <ItemGroup>
