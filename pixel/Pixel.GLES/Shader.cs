@@ -124,88 +124,15 @@ public class Shader
     public void Use()
     {
         GL.UseProgram(Program);
+        foreach (var kv in this.attributeLocations)
+        {
+            GL.EnableVertexAttribArray(kv.Value);
+        }
     }
 
-    // The shader sources provided with this project use hardcoded layout(location)-s. If you want to do it dynamically,
-    // you can omit the layout(location=X) lines in the vertex shader, and use this in VertexAttribPointer instead of the hardcoded values.
-    public int GetAttribLocation(string attribName)
+    public int this [string name]
     {
-        return GL.GetAttribLocation(Program, attribName);
+        get => this.attributeLocations.ContainsKey(name) ? this.attributeLocations[name] : this.uniformLocations[name];
     }
 
-    // Uniform setters
-    // Uniforms are variables that can be set by user code, instead of reading them from the VBO.
-    // You use VBOs for vertex-related data, and uniforms for almost everything else.
-
-    // Setting a uniform is almost always the exact same, so I'll explain it here once, instead of in every method:
-    //     1. Bind the program you want to set the uniform on
-    //     2. Get a handle to the location of the uniform with GL.GetUniformLocation.
-    //     3. Use the appropriate GL.Uniform* function to set the uniform.
-
-    /// <summary>
-    /// Set a uniform int on this shader.
-    /// </summary>
-    /// <param name="name">The name of the uniform</param>
-    /// <param name="data">The data to set</param>
-    public void SetInt(string name, int data)
-    {
-        GL.UseProgram(Program);
-        GL.Uniform1(uniformLocations[name], data);
-    }
-
-    /// <summary>
-    /// Set a uniform float on this shader.
-    /// </summary>
-    /// <param name="name">The name of the uniform</param>
-    /// <param name="data">The data to set</param>
-    public void SetFloat(string name, float data)
-    {
-        GL.UseProgram(Program);
-        GL.Uniform1(uniformLocations[name], data);
-    }
-
-    /// <summary>
-    /// Set a uniform Matrix4 on this shader
-    /// </summary>
-    /// <param name="name">The name of the uniform</param>
-    /// <param name="data">The data to set</param>
-    /// <remarks>
-    ///   <para>
-    ///   The matrix is transposed before being sent to the shader.
-    ///   </para>
-    /// </remarks>
-    public void SetMatrix4(string name, Matrix4 data)
-    {
-        GL.UseProgram(Program);
-        GL.UniformMatrix4(uniformLocations[name], true, ref data);
-    }
-
-    /// <summary>
-    /// Set a uniform Vector3 on this shader.
-    /// </summary>
-    /// <param name="name">The name of the uniform</param>
-    /// <param name="data">The data to set</param>
-    public void SetVector3(string name, Vector3 data)
-    {
-        GL.UseProgram(Program);
-        GL.Uniform3(uniformLocations[name], data);
-    }
-
-    public void SetVector2(string name, Vector2 data)
-    {
-        GL.UseProgram(Program);
-        GL.Uniform2(uniformLocations[name], data);
-    }
-    public void SetVector2(string name, float v0, float v1)
-    {
-        GL.UseProgram(Program);
-        GL.Uniform2(uniformLocations[name], v0, v1);
-    }
-
-    
-    public void SetUniform4(string name, int size, float[] data)
-    {
-        GL.UseProgram(Program);
-        GL.Uniform4(uniformLocations[name], size, data);
-    }
 }

@@ -10,6 +10,15 @@ public struct Vertex
     public float u { get; set; }
     public float v { get; set; }
 
+    public Vertex(float x, float y, float u, float v)
+    {
+        this.x = x;
+        this.y = y;
+        this.u = u;
+        this.v = v;
+    }
+    public Vertex(float x, float y): this(x, y, 0, 0) {}
+
     public static List<Vertex> Defalut = 
     new List<Vertex>() {
         new Vertex(){
@@ -21,8 +30,8 @@ public struct Vertex
         new Vertex(){
             x = 0f,
             y = 320f,
-            u = 1f,
-            v = 1f,
+            u = 0.5f,
+            v = 0.5f,
         },
         new Vertex(){
             x = 1280f,
