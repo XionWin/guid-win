@@ -2,7 +2,9 @@ namespace Pixel.GLES;
 
 public partial class Extension
 {
+    private static bool FEATHER_DEBUG = true;
     private const float LARGE = (float)1e5;
+    private const float MIN_THRESHOLD = 0.0001f;
     public static float[] GetLinearGradient(float sx, float sy, float ex, float ey)
     {
         float dx, dy, d;
@@ -10,7 +12,7 @@ public partial class Extension
         dx = ex - sx;
         dy = ey - sy;
         d = (float)Math.Sqrt(dx * dx + dy * dy);
-        if (d > 0.0001f)
+        if (d > MIN_THRESHOLD)
         {
             dx /= d;
             dy /= d;
@@ -35,7 +37,7 @@ public partial class Extension
 
         var radius = 0.0f;
 
-        var feather = Math.Max(1.0f, d);
+        var feather = Math.Max(1.0f, FEATHER_DEBUG ? 0 : d);
 
         var invxform = new float[6];
 
@@ -60,9 +62,7 @@ public partial class Extension
             Type = 0,
         };
 
-        // return frag.Floats;
-        return new float[]
-        {0f,0f,0f,0f,0f,0f,0f,0f,0f,0f,0f,0f,1f,0f,0f,0f,0f,1f,0f,0f,0f,-43f,1f,0f,1f,0f,0f,1f,0f,1f,0f,1f,1f,1f,1f,1f,63.5f,63.5f,63.5f,127f,1f,-1f,0f,0f};
+        return frag.Floats;
     }
 
     public static int TransformInverse(float[] inv, float[] t)

@@ -88,6 +88,10 @@ public class PixelWindow: GameWindow, Core.Domain.ISurface
         {
 
             float x = 0, y = 0, w = 400, h = 400;
+            shader.Use();
+            GL.BindVertexArray(vao);
+
+            
             var vertexes = new Vertex[]
             {
 
@@ -101,10 +105,7 @@ public class PixelWindow: GameWindow, Core.Domain.ISurface
                 new Vertex(x + w, y, 0.5f, 1),
                 new Vertex(x, y + h, 0.5f, 1),
                 new Vertex(x, y, 0.5f, 1),
-                // new Vertex(x, y, 0.5f, 1),
             };
-            shader.Use();
-            GL.BindVertexArray(vao);
                 
             GL.BindBuffer(BufferTarget.ArrayBuffer, vbo);
             GL.BufferData(BufferTarget.ArrayBuffer, (int)(Marshal.SizeOf(typeof(Vertex)) * vertexes.Count()), vertexes.ToArray(), BufferUsageHint.StreamDraw);
@@ -115,7 +116,72 @@ public class PixelWindow: GameWindow, Core.Domain.ISurface
             GL.Uniform2(shader["viewSize"], (float)this.Size.X, (float)this.Size.Y);
             
             // GL.Uniform4(shader["frag"], GLFragUniforms.UNIFORMARRAY_SIZE, Extension.GetLinearGradient(x + w / 2 - 50, y, x + w / 2 + 50, y + h));
-            GL.Uniform4(shader["frag"], GLFragUniforms.UNIFORMARRAY_SIZE, Extension.GetRadialGradient(200, 200, 0, 200));
+            GL.Uniform4(shader["frag"], GLFragUniforms.UNIFORMARRAY_SIZE, Extension.GetLinearGradient(x, y, x, y + h));
+            angle += 0.1f;
+            angle %= 360;
+
+
+            if(GL.GetError() is var err && err != OpenTK.Graphics.ES30.ErrorCode.NoError)
+                throw new Exception();
+
+            GL.Enable(EnableCap.StencilTest);
+            GL.StencilMask(0xff);
+
+            GL.StencilFunc(StencilFunction.Equal, 0x00, 0xff);
+            GL.StencilOp(StencilOp.Keep, StencilOp.Keep, StencilOp.Incr);
+            GL.DrawArrays(PrimitiveType.TriangleStrip, 0, 3);
+
+            
+
+            GL.StencilFunc(StencilFunction.Equal, 0x00, 0xff);
+            GL.StencilOp(StencilOp.Keep, StencilOp.Keep, StencilOp.Keep);
+            GL.DrawArrays(PrimitiveType.TriangleStrip, 0, vertexes.Length);
+
+            
+
+            GL.StencilFunc(StencilFunction.Equal, 0x00, 0xff);
+            GL.StencilOp(StencilOp.Zero, StencilOp.Zero, StencilOp.Zero);
+            GL.DrawArrays(PrimitiveType.TriangleStrip, 0, 3);
+
+            
+            GL.ColorMask(true, true, true, true);
+            GL.Disable(EnableCap.StencilTest);
+        }
+
+        
+        if(this.Shader is Shader shader2)
+        {
+
+            float x = 500, y = 0, w = 400, h = 400;
+            shader2.Use();
+            GL.BindVertexArray(vao);
+
+            
+            var vertexes = new Vertex[]
+            {
+
+                new Vertex(x, y, 0.5f, 1),
+                new Vertex(x, y + h, 0.5f, 1),
+                new Vertex(x + w, y + h, 0.5f, 1),
+                new Vertex(x + w, y, 0.5f, 1),
+
+                new Vertex(x, y + h, 0.5f, 1),
+                new Vertex(x + w, y + h, 0.5f, 1),
+                new Vertex(x + w, y, 0.5f, 1),
+                new Vertex(x, y + h, 0.5f, 1),
+                new Vertex(x, y, 0.5f, 1),
+            };
+                
+            GL.BindBuffer(BufferTarget.ArrayBuffer, vbo);
+            GL.BufferData(BufferTarget.ArrayBuffer, (int)(Marshal.SizeOf(typeof(Vertex)) * vertexes.Count()), vertexes.ToArray(), BufferUsageHint.StreamDraw);
+
+
+            GL.VertexAttribPointer(shader2["vertex"], 2, VertexAttribPointerType.Float, false, Marshal.SizeOf<Vertex>(), 0);
+            GL.VertexAttribPointer(shader2["tcoord"], 2, VertexAttribPointerType.Float, false, Marshal.SizeOf<Vertex>(), Marshal.SizeOf<float>() * 2);
+            GL.Uniform2(shader2["viewSize"], (float)this.Size.X, (float)this.Size.Y);
+            
+            // GL.Uniform4(shader["frag"], GLFragUniforms.UNIFORMARRAY_SIZE, Extension.GetLinearGradient(x + w / 2 - 50, y, x + w / 2 + 50, y + h));
+            GL.Uniform4(shader2["frag"], GLFragUniforms.UNIFORMARRAY_SIZE, Extension.GetRadialGradient(x + w / 2, y + h / 2, 0, h / 2));
             angle += 0.1f;
             angle %= 360;
 
@@ -156,30 +222,21 @@ public class PixelWindow: GameWindow, Core.Domain.ISurface
              new Vertex(100, 300, 0.5f, 0.5f),
              new Vertex(500, 300, 0.5f, 1),
          };
-        if(this.Shader is Shader shader2)
+        if(this.Shader is Shader shader_0)
         {
-            shader2.Use();
+            shader_0.Use();
             GL.BindVertexArray(vao);
                 
             GL.BindBuffer(BufferTarget.ArrayBuffer, vbo);
             GL.BufferData(BufferTarget.ArrayBuffer, (int)(Marshal.SizeOf(typeof(Vertex)) * vertexes2.Count()), vertexes2.ToArray(), BufferUsageHint.StreamDraw);
 
 
-            GL.VertexAttribPointer(shader2["vertex"], 2, VertexAttribPointerType.Float, false, Marshal.SizeOf<Vertex>(), 0);
-            GL.VertexAttribPointer(shader2["tcoord"], 2, VertexAttribPointerType.Float, false, Marshal.SizeOf<Vertex>(), Marshal.SizeOf<float>() * 2);
-            GL.Uniform2(shader2["viewSize"], (float)this.Size.X, (float)this.Size.Y);
+            GL.VertexAttribPointer(shader_0["vertex"], 2, VertexAttribPointerType.Float, false, Marshal.SizeOf<Vertex>(), 0);
+            GL.VertexAttribPointer(shader_0["tcoord"], 2, VertexAttribPointerType.Float, false, Marshal.SizeOf<Vertex>(), Marshal.SizeOf<float>() * 2);
+            GL.Uniform2(shader_0["viewSize"], (float)this.Size.X, (float)this.Size.Y);
            
-            // var farr = new float[]
-            // {
-            //     0f,0f,0f,0f,0f,0f,0f,0f,0f,0f,0f,0f,
-            //     1f,0f,0f,0f,0f,1f,0f,0f,-60f,99898f,1f,0f,
-            //     0.2509804f,0f,0f,0.2509804f,
-            //     0f,0.2509804f,0f,0.2509804f,
-            //     1f,1f,
-            //     1f,1f,
-            //     100000f,100007f,0f,14f,1f,-1f,0f,0};
 
-            GL.Uniform4(shader2["frag"], GLFragUniforms.UNIFORMARRAY_SIZE, frag2.Floats);
+            GL.Uniform4(shader_0["frag"], GLFragUniforms.UNIFORMARRAY_SIZE, frag2.Floats);
 
 
             if(GL.GetError() is var err && err != OpenTK.Graphics.ES30.ErrorCode.NoError)

@@ -22,7 +22,7 @@ public partial class Extension
 
         var radius = r;
 
-        var feather = Math.Max(1.0f, f);
+        var feather = Math.Max(1.0f, FEATHER_DEBUG ? 0 : f);
 
         var invxform = new float[6];
 
