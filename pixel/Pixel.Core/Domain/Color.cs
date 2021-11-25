@@ -1,18 +1,17 @@
 namespace Pixel.Core.Domain;
 
-public struct Color
+public struct Color<T>
 {
-    public float r;
-    public float g;
-    public float b;
-    public float a;
+    public T r;
+    public T g;
+    public T b;
+    public T a;
 
-    public Color(float r, float g, float b, float a)
+    public Color(T r, T g, T b, T a)
     {
         this.r = r;
         this.g = g;
         this.b = b;
         this.a = a;
     }
-    public Color(float r, float g, float b): this(r, g, b, 1f) {}
 }

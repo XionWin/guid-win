@@ -49,8 +49,8 @@ public partial class Extension
         GLFragUniforms frag = new GLFragUniforms()
         {
             paintMat = paintMat,
-            innerCol = new Core.Domain.Color(1f, 0.5f, 0.5f),
-            outerCol = new Core.Domain.Color(0, 0, 1f),
+            innerCol = new Core.Domain.Color<float>(0.1f, 0f, 0f, 0.01f),
+            outerCol = new Core.Domain.Color<float>(0f, 0f, 0.4f, 0.01f),
             scissorExt = extent,
             scissorScale = new float[] { 1f, 1f },
             extent = extent,
@@ -63,6 +63,16 @@ public partial class Extension
         };
 
         return frag.Floats;
+        // return new float[]
+        // {0f,0f,0f,0f,0f,0f,0f,0f,0f,0f,0f,0f,1f,0f,0f,0f,0f,1f,0f,0f,0f,-43f,1f,0f,
+        // 0.1568628f,0f,0f,0.1568628f,
+        // 0f,0.1568628f,0f,0.1568628f,
+        // 1f,1f,
+        // 1f,1f,
+        // 63.5f,63.5f,
+        // 63.5f,
+        // 127f,
+        // 1f,-1f,0f,0f};
     }
 
     public static int TransformInverse(float[] inv, float[] t)

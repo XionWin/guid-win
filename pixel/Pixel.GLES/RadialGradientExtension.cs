@@ -34,8 +34,8 @@ public partial class Extension
         GLFragUniforms frag = new GLFragUniforms()
         {
             paintMat = paintMat,
-            innerCol = new Core.Domain.Color(1f, 0.5f, 0.5f),
-            outerCol = new Core.Domain.Color(0, 0, 1f),
+            innerCol = new Core.Domain.Color<float>(1f, 0.5f, 0.5f, 0.01f),
+            outerCol = new Core.Domain.Color<float>(0, 0, 1f, 0.01f),
             scissorExt = extent,
             scissorScale = new float[] { 1f, 1f },
             extent = extent,
