@@ -48,31 +48,21 @@ public partial class Extension
 
         GLFragUniforms frag = new GLFragUniforms()
         {
-            paintMat = paintMat,
-            innerCol = new Core.Domain.Color<float>(0.1f, 0f, 0f, 0.01f),
-            outerCol = new Core.Domain.Color<float>(0f, 0f, 0.4f, 0.01f),
-            scissorExt = extent,
-            scissorScale = new float[] { 1f, 1f },
-            extent = extent,
+            PaintMat = paintMat,
+            InnerCol = new Core.Domain.Color<float>(1f, 0f, 0f, 0.01f),
+            OuterCol = new Core.Domain.Color<float>(0f, 0f, 1f, 0.01f),
+            ScissorExt = extent,
+            ScissorScale = new float[] { 1f, 1f },
+            Extent = extent,
             Radius = radius,
             Feather = feather,
             StrokeMult = 1f,
-            StrokeThr = -1f,
-            texType = 0,
+            StrokeThr = 1f,
+            TexType = 0,
             Type = 0,
         };
 
         return frag.Floats;
-        // return new float[]
-        // {0f,0f,0f,0f,0f,0f,0f,0f,0f,0f,0f,0f,1f,0f,0f,0f,0f,1f,0f,0f,0f,-43f,1f,0f,
-        // 0.1568628f,0f,0f,0.1568628f,
-        // 0f,0.1568628f,0f,0.1568628f,
-        // 1f,1f,
-        // 1f,1f,
-        // 63.5f,63.5f,
-        // 63.5f,
-        // 127f,
-        // 1f,-1f,0f,0f};
     }
 
     public static int TransformInverse(float[] inv, float[] t)

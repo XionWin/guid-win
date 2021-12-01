@@ -1,9 +1,9 @@
 using System.Runtime.InteropServices;
 
-namespace Pixel.GLES;
+namespace Pixel.GLES.Brush;
 
 [StructLayout(LayoutKind.Sequential, Pack = 1)]
-public struct GLFragUniforms
+public class GLFragUniforms
 {
     public const int UNIFORMARRAY_SIZE = 11;
     
@@ -45,24 +45,16 @@ public struct GLFragUniforms
     public float TexType { get => this.texType; set => this.texType = value; }
     public float Type { get => this.type; set => this.type = value; }
 
-    public float[] Floats
+    public float[] GetData()
     {
-        get
-        {
-            int size = GLFragUniforms.Size;
-            int felements = (int)Math.Ceiling((float)(size / sizeof(float)));
-            float[] farr = new float[felements];
+        int size = GLFragUniforms_2.Size;
+        int felements = (int)Math.Ceiling((float)(size / sizeof(float)));
+        float[] farr = new float[felements];
 
-            nint ptr = Marshal.AllocHGlobal(size);
-            Marshal.StructureToPtr(this, ptr, true);
-            Marshal.Copy(ptr, farr, 0, felements);
-            Marshal.FreeHGlobal(ptr);
-            return farr;
-        }
+        nint ptr = Marshal.AllocHGlobal(size);
+        Marshal.StructureToPtr(this, ptr, true);
+        Marshal.Copy(ptr, farr, 0, felements);
+        Marshal.FreeHGlobal(ptr);
+        return farr;
     }
-
-    /// <summary>
-    /// Gets the size of the <see cref="GLFragUniforms"/> in bytes.
-    /// </summary>
-    /// <value>The size of the GLNVGfragUniforms struct.</value>
 }

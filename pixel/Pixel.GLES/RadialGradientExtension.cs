@@ -33,17 +33,17 @@ public partial class Extension
 
         GLFragUniforms frag = new GLFragUniforms()
         {
-            paintMat = paintMat,
-            innerCol = new Core.Domain.Color<float>(1f, 0.5f, 0.5f, 0.01f),
-            outerCol = new Core.Domain.Color<float>(0, 0, 1f, 0.01f),
-            scissorExt = extent,
-            scissorScale = new float[] { 1f, 1f },
-            extent = extent,
+            PaintMat = paintMat,
+            InnerCol = new Core.Domain.Color<float>(1f, 0.0f, 0.0f, 0.1f),
+            OuterCol = new Core.Domain.Color<float>(0, 0, 1f, 0.1f),
+            ScissorExt = extent,
+            ScissorScale = new float[] { 1f, 1f },
+            Extent = extent,
             Radius = radius,
             Feather = feather,
             StrokeMult = 1f,
-            StrokeThr = -1f,
-            texType = 0,
+            StrokeThr = 1f,
+            TexType = 0,
             Type = 0,
         };
 
