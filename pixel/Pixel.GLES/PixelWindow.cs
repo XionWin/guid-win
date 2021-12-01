@@ -115,7 +115,7 @@ public class PixelWindow: GameWindow, Core.Domain.ISurface
 
             // GL.Uniform4(shader["frag"], GLFragUniforms.UNIFORMARRAY_SIZE, Extension.GetLinearGradient(x + w / 2 - 50, y, x + w / 2 + 50, y + h));
 
-            var lineGradinet = new Brush.LinearGradientBrush(30, 0, 0, 400) {Color1 = new Core.Domain.Color<float>(1f, 0f, 0f, 0.1f), Color2 = new Core.Domain.Color<float>(0f, 1f, 0f, 0.6f)};
+            var lineGradinet = new Brush.LinearGradientBrush(x, y, x, y + h) {Color1 = new Core.Domain.Color<float>(1f, 0f, 0f, 1f), Color2 = new Core.Domain.Color<float>(0f, 1f, 0f, 1f)};
 
             GL.Uniform4(shader["frag"], GLFragUniforms.UNIFORMARRAY_SIZE, lineGradinet.GetData());
             angle += 0.1f;
@@ -177,7 +177,9 @@ public class PixelWindow: GameWindow, Core.Domain.ISurface
             GL.Uniform2(shader2["viewSize"], (float)this.Size.X, (float)this.Size.Y);
 
             // GL.Uniform4(shader["frag"], GLFragUniforms.UNIFORMARRAY_SIZE, Extension.GetLinearGradient(x + w / 2 - 50, y, x + w / 2 + 50, y + h));
-            GL.Uniform4(shader2["frag"], GLFragUniforms.UNIFORMARRAY_SIZE, Extension.GetRadialGradient(x + w / 2, y + h / 2, 0, h / 2));
+             var radialGradient = new Brush.RadialGradientBrush(x + w / 2, y + h / 2, 0, h / 2) {Color1 = new Core.Domain.Color<float>(1f, 0f, 0f, 1f), Color2 = new Core.Domain.Color<float>(0f, 1f, 0f, 1f)};
+
+            GL.Uniform4(shader2["frag"], GLFragUniforms.UNIFORMARRAY_SIZE, radialGradient.GetData());
             angle += 0.1f;
             angle %= 360;
 

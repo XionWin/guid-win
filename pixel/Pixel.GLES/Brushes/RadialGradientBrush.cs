@@ -1,6 +1,6 @@
 namespace Pixel.GLES.Brush;
 
-public class LinearGradientBrush: GradientBrush
+public class RadialGradientBrush: GradientBrush
 {
     public Pixel.Core.Domain.Color<float> Color1
     {
@@ -13,49 +13,38 @@ public class LinearGradientBrush: GradientBrush
         set => this.FragUniforms.OuterCol = value;
     }
 
-    
-    public System.Drawing.PointF Start { get; set; }
-    public System.Drawing.PointF End { get; set; }
+    public System.Drawing.PointF Center { get; set; }
+    public float InR { get; set; }
+    public float OutR { get; set; }
 
-    public LinearGradientBrush(float sx, float sy, float ex, float ey)
+    public RadialGradientBrush(float cx, float cy, float inr, float outr)
     {
-        this.Start = new System.Drawing.PointF(sx, sy);
-        this.End = new System.Drawing.PointF(ex, ey);
+        this.Center = new System.Drawing.PointF(cx, cy);
+        this.InR = inr;
+        this.OutR = outr;
     }
 
     public override float[] GetData()
     {
-        float dx, dy, d;
-
-        dx = this.End.X - this.Start.X;
-        dy = this.End.Y - this.Start.Y;
-        d = (float)Math.Sqrt(dx * dx + dy * dy);
-        if (d > MIN_THRESHOLD)
-        {
-            dx /= d;
-            dy /= d;
-        }
-        else
-        {
-            dx = 0;
-            dy = 1;
-        }
+        float r = (InR + OutR) * 0.5f;
+        float f = (OutR - InR);
 
         var xform = new float[6];
-        xform[0] = dy;
-        xform[1] = -dx;
-        xform[2] = dx;
-        xform[3] = dy;
-        xform[4] = this.Start.X - dx * LARGE;
-        xform[5] = this.Start.Y - dy * LARGE;
+        xform[0] = 1;
+        xform[1] = 0;
+        xform[2] = 0;
+        xform[3] = 1;
+        xform[4] = Center.X;
+        xform[5] = Center.Y;
+
 
         var extent = new float[2];
-        extent[0] = LARGE;
-        extent[1] = LARGE + d * 0.5f;
+        extent[0] = r;
+        extent[1] = r;
 
-        var radius = 0.0f;
+        var radius = r;
 
-        var feather = Math.Max(1.0f, FEATHER_DEBUG ? 0 : d);
+        var feather = Math.Max(1.0f, FEATHER_DEBUG ? 0 : f);
 
         var invxform = new float[6];
 
@@ -63,7 +52,7 @@ public class LinearGradientBrush: GradientBrush
 
         var paintMat = new float[12];
         xformToMat3x4(paintMat, invxform);
-
+        
         this.FragUniforms.PaintMat = paintMat;
         // this.FragUniforms.InnerCol = new Core.Domain.Color<float>(1f, 0f, 0f, 1f);
         // this.FragUniforms.OuterCol = new Core.Domain.Color<float>(0f, 0f, 1f, 1f);
