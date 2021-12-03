@@ -32,7 +32,7 @@ out vec4 outColor;
 
 // Scissoring
 float scissorMask(vec2 p) {
-	vec2 sc = (abs((scissorMat * vec3(p, 1.0)).xy) - scissorExt);
+	vec2 sc = abs((scissorMat * vec3(p, 1.0)).xy) - scissorExt;
 	sc = vec2(0.5, 0.5) - sc * scissorScale;
 	// if (p.y > 200.0)
 	// 	return 1.0;

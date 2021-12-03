@@ -4,9 +4,12 @@ public class RadialGradientBrush: GradientBrush
 {
     public Pixel.Core.Domain.Color<float> Color1
     {
-        get => this.FragUniforms.InnerCol;
+        get => ConvertColor(this.FragUniforms.InnerCol);
         set => this.FragUniforms.InnerCol = value;
     }
+
+    private Pixel.Core.Domain.Color<float> ConvertColor(Pixel.Core.Domain.Color<float> color) =>
+        new Core.Domain.Color<float>(color.r * color.a, color.g * color.a, color.b * color.a,  color.a);
     public Pixel.Core.Domain.Color<float> Color2
     {
         get => this.FragUniforms.OuterCol;
