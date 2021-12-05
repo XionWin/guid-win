@@ -1,3 +1,5 @@
+using OpenTK.Mathematics;
+
 namespace Pixel.GLES.Brush;
 
 public class LinearGradientBrush: GradientBrush
@@ -9,7 +11,7 @@ public class LinearGradientBrush: GradientBrush
         set
         {
             this.color1 = value;
-            this.FragUniforms.InnerCol = ConvertColor(value);
+            this.FragUniforms.InnerColor = ConvertColor(value);
         }
     }
     private Pixel.Core.Domain.Color<byte> color2;
@@ -19,7 +21,7 @@ public class LinearGradientBrush: GradientBrush
         set
         {
             this.color2 = value;
-            this.FragUniforms.OuterCol = ConvertColor(value);
+            this.FragUniforms.OuterColor = ConvertColor(value);
         }
     }
 
@@ -50,28 +52,34 @@ public class LinearGradientBrush: GradientBrush
             dy = 1;
         }
 
-        var xform = new float[6];
-        xform[0] = dy;
-        xform[1] = -dx;
-        xform[2] = dx;
-        xform[3] = dy;
-        xform[4] = this.Start.X - dx * LARGE;
-        xform[5] = this.Start.Y - dy * LARGE;
+        var xform = new Matrix3x4();
+        xform.Row0.X = dy;
+        xform.Row0.Y = -dx;
+        xform.Row1.X = dx;
+        xform.Row1.Y = dy;
 
-        var extent = new float[2];
-        extent[0] = LARGE;
-        extent[1] = LARGE + d * 0.5f;
+        xform.Row2.X = this.Start.X - dx * LARGE;
+        xform.Row2.Y = this.Start.Y - dy * LARGE;
+
+        xform.Row2.Z = 1;
+
+        // var xform = new float[6];
+        // xform[0] = dy;
+        // xform[1] = -dx;
+        // xform[2] = dx;
+        // xform[3] = dy;
+        // xform[4] = this.Start.X - dx * LARGE;
+        // xform[5] = this.Start.Y - dy * LARGE;
+
+
+
+        var paintMat = TransformInverse(xform);
+
+        var extent = new Vector2(LARGE, LARGE + d * 0.5f);
 
         var radius = 0.0f;
 
         var feather = Math.Max(1.0f, FEATHER_DEBUG ? 0 : d);
-
-        var invxform = new float[6];
-
-        TransformInverse(invxform, xform);
-
-        var paintMat = new float[12];
-        xformToMat3x4(paintMat, invxform);
 
         this.FragUniforms.PaintMat = paintMat;
         // this.FragUniforms.InnerCol = new Core.Domain.Color<float>(1f, 0f, 0f, 1f);

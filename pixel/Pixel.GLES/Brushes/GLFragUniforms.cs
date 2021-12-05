@@ -1,4 +1,5 @@
 using System.Runtime.InteropServices;
+using OpenTK.Mathematics;
 
 namespace Pixel.GLES.Brush;
 
@@ -6,57 +7,48 @@ namespace Pixel.GLES.Brush;
 public class GLFragUniforms
 {
     public const int UNIFORMARRAY_SIZE = 11;
-    
-    [MarshalAs(UnmanagedType.ByValArray, SizeConst = 12)]
-    private float[] scissorMat = new float[12];
-    [MarshalAs(UnmanagedType.ByValArray, SizeConst = 12)]
-    private float[] paintMat = new float[12];
-    // [MarshalAs(UnmanagedType.ByValArray, SizeConst = 4)]
-    private Core.Domain.Color<float> innerCol;
-    // [MarshalAs(UnmanagedType.ByValArray, SizeConst = 4)]
-    private Core.Domain.Color<float> outerCol;
-    // float[2]
-    [MarshalAs(UnmanagedType.ByValArray, SizeConst = 2)]
-    private float[] scissorExt = new float[2];
-    // float[2]
-    [MarshalAs(UnmanagedType.ByValArray, SizeConst = 2)]
-    private float[] scissorScale = new float[2];
-    // float[2]
-    [MarshalAs(UnmanagedType.ByValArray, SizeConst = 2)]
-    private float[] extent = new float[2];
-    private float radius;
-    private float feather;
-    private float strokeMult;
-    private float strokeThr;
-    private float texType;
-    private float type;
-
     public static int Size => Marshal.SizeOf(typeof(GLFragUniforms));
 
-    public float[] ScissorMat { get => this.scissorMat; set => this.scissorMat = value; }
-    public float[] PaintMat { get => this.paintMat; set => this.paintMat = value; }
-    public float[] ScissorExt { get => this.scissorExt; set => this.scissorExt = value; }
-    public float[] ScissorScale { get => this.scissorScale; set => this.scissorScale = value; }
-    public float[] Extent { get => this.extent; set => this.extent = value; }
-    public Core.Domain.Color<float> InnerCol { get => this.innerCol; set => this.innerCol = value; }
-    public Core.Domain.Color<float> OuterCol { get => this.outerCol; set => this.outerCol = value; }
-    public float Radius { get => this.radius; set => this.radius = value; }
-    public float Feather { get => this.feather; set => this.feather = value; }
-    public float StrokeMult { get => this.strokeMult; set => this.strokeMult = value; }
-    public float StrokeThr { get => this.strokeThr; set => this.strokeThr = value; }
-    public float TexType { get => this.texType; set => this.texType = value; }
-    public float Type { get => this.type; set => this.type = value; }
+    public Matrix3x4 ScissorMat {get; set;}
+    public Matrix3x4 PaintMat {get; set;}
+    public Vector4 InnerColor {get; set;}
+    public Vector4 OuterColor {get; set;}
+    public Vector2 ScissorExt {get; set;}
+    public Vector2 ScissorScale {get; set;}
+    public Vector2 Extent {get; set;}
+    public float Radius {get; set;}
+    public float Feather {get; set;}
+    public float StrokeMult {get; set;}
+    public float StrokeThr {get; set;}
+    public float TexType {get; set;}
+    public float Type {get; set;}
 
     public float[] GetData()
     {
-        int size = GLFragUniforms_2.Size;
-        int felements = (int)Math.Ceiling((float)(size / sizeof(float)));
-        float[] farr = new float[felements];
+        return new []
+        {
+            this.ScissorMat.Row0.X, this.ScissorMat.Row0.Y, this.ScissorMat.Row0.Z, this.ScissorMat.Row0.W,
+            this.ScissorMat.Row1.X, this.ScissorMat.Row1.Y, this.ScissorMat.Row1.Z, this.ScissorMat.Row1.W,
+            this.ScissorMat.Row2.X, this.ScissorMat.Row2.Y, this.ScissorMat.Row2.Z, this.ScissorMat.Row2.W,
 
-        nint ptr = Marshal.AllocHGlobal(size);
-        Marshal.StructureToPtr(this, ptr, true);
-        Marshal.Copy(ptr, farr, 0, felements);
-        Marshal.FreeHGlobal(ptr);
-        return farr;
+            this.PaintMat.Row0.X, this.PaintMat.Row0.Y, this.PaintMat.Row0.Z, this.PaintMat.Row0.W,
+            this.PaintMat.Row1.X, this.PaintMat.Row1.Y, this.PaintMat.Row1.Z, this.PaintMat.Row1.W,
+            this.PaintMat.Row2.X, this.PaintMat.Row2.Y, this.PaintMat.Row2.Z, this.PaintMat.Row2.W,
+
+            this.InnerColor.X, this.InnerColor.Y, this.InnerColor.Z, this.InnerColor.W,
+            this.OuterColor.X, this.OuterColor.Y, this.OuterColor.Z, this.OuterColor.W,
+
+            this.ScissorExt.X, this.ScissorExt.Y,
+            this.ScissorScale.X, this.ScissorScale.Y,
+            this.Extent.X, this.Extent.Y,
+
+            this.Radius,
+            this.Feather,
+            this.StrokeMult,
+            this.StrokeThr,
+            this.TexType,
+            this.Type,
+            
+        };
     }
 }

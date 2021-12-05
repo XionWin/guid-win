@@ -1,34 +1,43 @@
+using OpenTK.Mathematics;
+
 namespace Pixel.GLES.Brush;
 
 public class SolidColorBursh: Pixel.Core.Domain.IBrush<float>
 {
-
     public GLFragUniforms FragUniforms { get; } = new GLFragUniforms();
 
-    public Pixel.Core.Domain.Color<float> Color
+    private Pixel.Core.Domain.Color<byte> color;
+    public Pixel.Core.Domain.Color<byte> Color
     {
-        get => this.FragUniforms.InnerCol;
-        set => this.FragUniforms.InnerCol = value;
+        get => this.color;
+        set
+        {
+            this.color = value;
+            this.FragUniforms.InnerColor = this.FragUniforms.OuterColor = ConvertColor(value);
+        }
     }
 
     public SolidColorBursh()
     {
-
-        this.FragUniforms.PaintMat = new float[] {1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0};
-        this.FragUniforms.ScissorExt = new float[]{1, 1};
-        this.FragUniforms.Extent = new float[]{1, 1};
+        this.FragUniforms.PaintMat = new Matrix3x4(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0);
+        this.FragUniforms.ScissorExt = new Vector2(1, 1);
+        this.FragUniforms.ScissorScale = new Vector2(1, 1);
+        this.FragUniforms.Extent = new Vector2(1, 1);
         this.FragUniforms.Radius = 0;
         this.FragUniforms.Feather = 0;
-        this.FragUniforms.ScissorScale = new float[]{1, 1};
-        this.FragUniforms.StrokeMult = 1f;
-        this.FragUniforms.StrokeThr = 1f;
+        this.FragUniforms.StrokeMult = 1;
+        this.FragUniforms.StrokeThr = 1;
         this.FragUniforms.Type = 2;
     }
 
     public float[] GetData()
     {
-        this.FragUniforms.InnerCol = this.FragUniforms.OuterCol = this.FragUniforms.InnerCol;
         return this.FragUniforms.GetData();
+    }
+    protected Vector4 ConvertColor(Pixel.Core.Domain.Color<byte> color)
+    {
+        var a = color.a /255f;
+        return new Vector4(color.r /255f * a, color.g  /255f * a, color.b  /255f * a,  a);
     }
     
 }

@@ -1,3 +1,5 @@
+using OpenTK.Mathematics;
+
 namespace Pixel.GLES.Brush;
 
 public abstract class GradientBrush: Pixel.Core.Domain.IBrush<float>
@@ -10,15 +12,15 @@ public abstract class GradientBrush: Pixel.Core.Domain.IBrush<float>
 
     public GradientBrush()
     {
-        this.FragUniforms.ScissorScale = new float[]{1, 1};
+        this.FragUniforms.ScissorScale = new Vector2(1, 1);
         this.FragUniforms.StrokeMult = 1f;
         this.FragUniforms.StrokeThr = 1f;
         this.FragUniforms.Type = 0;
     }
-    protected Pixel.Core.Domain.Color<float> ConvertColor(Pixel.Core.Domain.Color<byte> color)
+    protected Vector4 ConvertColor(Pixel.Core.Domain.Color<byte> color)
     {
         var a = color.a /255f;
-        return new Core.Domain.Color<float>(color.r /255f * a, color.g  /255f * a, color.b  /255f * a,  a);
+        return new Vector4(color.r /255f * a, color.g  /255f * a, color.b  /255f * a,  a);
     }
 
     public abstract float[] GetData();
@@ -39,6 +41,19 @@ public abstract class GradientBrush: Pixel.Core.Domain.IBrush<float>
         inv[3] = (float)(t[0] * invdet);
         inv[5] = (float)(((double)t[1] * t[4] - (double)t[0] * t[5]) * invdet);
         return 1;
+    }
+
+    protected static Matrix3x4 TransformInverse(Matrix3x4 mat)
+    {
+        double invdet, det = (double)mat.Row0.X * mat.Row1.Y - (double)mat.Row1.X * mat.Row0.Y;
+        invdet = 1.0 / det;
+
+        return new Matrix3x4
+        (
+            (float)(mat.Row1.Y * invdet), (float)(-mat.Row0.Y * invdet), 0, 0,
+            (float)(-mat.Row1.X * invdet), (float)(mat.Row0.X * invdet), 0, 0,
+            (float)(((double)mat.Row1.X * mat.Row2.Y - (double)mat.Row1.Y * mat.Row2.X) * invdet), (float)(((double)mat.Row0.Y * mat.Row2.X - (double)mat.Row0.X * mat.Row2.Y) * invdet), 1, 0
+        );
     }
 
     protected static void xformToMat3x4(float[] m3, float[] t)
