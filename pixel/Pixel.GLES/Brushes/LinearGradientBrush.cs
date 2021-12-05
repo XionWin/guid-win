@@ -2,18 +2,27 @@ namespace Pixel.GLES.Brush;
 
 public class LinearGradientBrush: GradientBrush
 {
-    public Pixel.Core.Domain.Color<float> Color1
+    private Pixel.Core.Domain.Color<byte> color1;
+    public Pixel.Core.Domain.Color<byte> Color1
     {
-        get => this.FragUniforms.InnerCol;
-        set => this.FragUniforms.InnerCol = value;
+        get => this.color1;
+        set
+        {
+            this.color1 = value;
+            this.FragUniforms.InnerCol = ConvertColor(value);
+        }
     }
-    public Pixel.Core.Domain.Color<float> Color2
+    private Pixel.Core.Domain.Color<byte> color2;
+    public Pixel.Core.Domain.Color<byte> Color2
     {
-        get => this.FragUniforms.OuterCol;
-        set => this.FragUniforms.OuterCol = value;
+        get => this.color2;
+        set
+        {
+            this.color2 = value;
+            this.FragUniforms.OuterCol = ConvertColor(value);
+        }
     }
 
-    
     public System.Drawing.PointF Start { get; set; }
     public System.Drawing.PointF End { get; set; }
 

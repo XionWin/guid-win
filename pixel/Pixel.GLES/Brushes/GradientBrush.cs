@@ -15,6 +15,11 @@ public abstract class GradientBrush: Pixel.Core.Domain.IBrush<float>
         this.FragUniforms.StrokeThr = 1f;
         this.FragUniforms.Type = 0;
     }
+    protected Pixel.Core.Domain.Color<float> ConvertColor(Pixel.Core.Domain.Color<byte> color)
+    {
+        var a = color.a /255f;
+        return new Core.Domain.Color<float>(color.r /255f * a, color.g  /255f * a, color.b  /255f * a,  a);
+    }
 
     public abstract float[] GetData();
     

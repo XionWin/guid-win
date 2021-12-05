@@ -11,7 +11,9 @@ public class GLFragUniforms
     private float[] scissorMat = new float[12];
     [MarshalAs(UnmanagedType.ByValArray, SizeConst = 12)]
     private float[] paintMat = new float[12];
+    // [MarshalAs(UnmanagedType.ByValArray, SizeConst = 4)]
     private Core.Domain.Color<float> innerCol;
+    // [MarshalAs(UnmanagedType.ByValArray, SizeConst = 4)]
     private Core.Domain.Color<float> outerCol;
     // float[2]
     [MarshalAs(UnmanagedType.ByValArray, SizeConst = 2)]

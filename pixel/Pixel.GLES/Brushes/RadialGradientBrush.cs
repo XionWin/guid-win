@@ -2,18 +2,25 @@ namespace Pixel.GLES.Brush;
 
 public class RadialGradientBrush: GradientBrush
 {
-    public Pixel.Core.Domain.Color<float> Color1
+    private Pixel.Core.Domain.Color<byte> color1;
+    public Pixel.Core.Domain.Color<byte> Color1
     {
-        get => ConvertColor(this.FragUniforms.InnerCol);
-        set => this.FragUniforms.InnerCol = value;
+        get => this.color1;
+        set
+        {
+            this.color1 = value;
+            this.FragUniforms.InnerCol = ConvertColor(value);
+        }
     }
-
-    private Pixel.Core.Domain.Color<float> ConvertColor(Pixel.Core.Domain.Color<float> color) =>
-        new Core.Domain.Color<float>(color.r * color.a, color.g * color.a, color.b * color.a,  color.a);
-    public Pixel.Core.Domain.Color<float> Color2
+    private Pixel.Core.Domain.Color<byte> color2;
+    public Pixel.Core.Domain.Color<byte> Color2
     {
-        get => this.FragUniforms.OuterCol;
-        set => this.FragUniforms.OuterCol = value;
+        get => this.color2;
+        set
+        {
+            this.color2 = value;
+            this.FragUniforms.OuterCol = ConvertColor(value);
+        }
     }
 
     public System.Drawing.PointF Center { get; set; }
