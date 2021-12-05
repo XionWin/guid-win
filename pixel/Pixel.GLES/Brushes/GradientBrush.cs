@@ -48,6 +48,16 @@ public abstract class GradientBrush: Pixel.Core.Domain.IBrush<float>
         double invdet, det = (double)mat.Row0.X * mat.Row1.Y - (double)mat.Row1.X * mat.Row0.Y;
         invdet = 1.0 / det;
 
+        if (det > -1e-6 && det < 1e-6)
+        {
+            return new Matrix3x4
+            (
+                1, 0, 0, 0,
+                0, 1, 0, 0,
+                0, 0, 1, 0
+            );
+        }
+
         return new Matrix3x4
         (
             (float)(mat.Row1.Y * invdet), (float)(-mat.Row0.Y * invdet), 0, 0,
