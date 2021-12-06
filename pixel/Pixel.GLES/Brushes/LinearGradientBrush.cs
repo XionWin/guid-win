@@ -57,42 +57,19 @@ public class LinearGradientBrush: GradientBrush
         xform.Row0.Y = -dx;
         xform.Row1.X = dx;
         xform.Row1.Y = dy;
-
         xform.Row2.X = this.Start.X - dx * LARGE;
         xform.Row2.Y = this.Start.Y - dy * LARGE;
-
         xform.Row2.Z = 1;
 
-        // var xform = new float[6];
-        // xform[0] = dy;
-        // xform[1] = -dx;
-        // xform[2] = dx;
-        // xform[3] = dy;
-        // xform[4] = this.Start.X - dx * LARGE;
-        // xform[5] = this.Start.Y - dy * LARGE;
-
-
-
         var paintMat = TransformInverse(xform);
-
         var extent = new Vector2(LARGE, LARGE + d * 0.5f);
-
         var radius = 0.0f;
-
         var feather = Math.Max(1.0f, FEATHER_DEBUG ? 0 : d);
-
         this.FragUniforms.PaintMat = paintMat;
-        // this.FragUniforms.InnerCol = new Core.Domain.Color<float>(1f, 0f, 0f, 1f);
-        // this.FragUniforms.OuterCol = new Core.Domain.Color<float>(0f, 0f, 1f, 1f);
         this.FragUniforms.ScissorExt = extent;
-        // this.FragUniforms.ScissorScale = new float[] { 1f, 1f };
         this.FragUniforms.Extent = extent;
         this.FragUniforms.Radius = radius;
         this.FragUniforms.Feather = feather;
-        // this.FragUniforms.StrokeMult = 1f;
-        // this.FragUniforms.StrokeThr = 1f;
-        // this.FragUniforms.TexType = 0;
-        // this.FragUniforms.Type = 0;
 
         return this.FragUniforms.GetData();
     }

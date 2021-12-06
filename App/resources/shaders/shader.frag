@@ -98,7 +98,7 @@ void main(void) {
 	// Stencil fill
 	else if (type == 2) 
 	{
-		result = vec4(1,1,1,1);
+		result = innerCol; //vec4(1,1,1,1);
 	}
 	// Textured tris
 	else if (type == 3) 

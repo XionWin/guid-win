@@ -8,7 +8,6 @@ public class GLFragUniforms
 {
     public const int UNIFORMARRAY_SIZE = 11;
     public static int Size => Marshal.SizeOf(typeof(GLFragUniforms));
-
     public Matrix3x4 ScissorMat {get; set;}
     public Matrix3x4 PaintMat {get; set;}
     public Vector4 InnerColor {get; set;}
@@ -23,9 +22,8 @@ public class GLFragUniforms
     public float TexType {get; set;}
     public float Type {get; set;}
 
-    public float[] GetData()
-    {
-        return new []
+    public float[] GetData() =>
+        new []
         {
             this.ScissorMat.Row0.X, this.ScissorMat.Row0.Y, this.ScissorMat.Row0.Z, this.ScissorMat.Row0.W,
             this.ScissorMat.Row1.X, this.ScissorMat.Row1.Y, this.ScissorMat.Row1.Z, this.ScissorMat.Row1.W,
@@ -48,7 +46,5 @@ public class GLFragUniforms
             this.StrokeThr,
             this.TexType,
             this.Type,
-            
         };
-    }
 }

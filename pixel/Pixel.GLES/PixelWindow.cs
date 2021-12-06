@@ -61,7 +61,6 @@ public class PixelWindow: GameWindow, Core.Domain.ISurface
     };
 
 
-    static float angle = 0;
     public void OnRenderSurface()
     {
         GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit | ClearBufferMask.StencilBufferBit);
@@ -69,44 +68,106 @@ public class PixelWindow: GameWindow, Core.Domain.ISurface
         GL.Enable(EnableCap.Blend);
 
         GL.BlendFuncSeparate(BlendingFactorSrc.One, BlendingFactorDest.OneMinusSrcAlpha, BlendingFactorSrc.One, BlendingFactorDest.OneMinusSrcAlpha);
-        // GL.BlendFunc(BlendingFactorSrc.SrcAlpha, BlendingFactorDest.OneMinusSrcAlpha);
+       
+        GL.Enable(EnableCap.CullFace);
+        GL.CullFace(CullFaceMode.Back);
+        GL.FrontFace(FrontFaceDirection.Ccw);
+        GL.Enable(EnableCap.Blend);
+        GL.Disable(EnableCap.DepthTest);
+        GL.Disable(EnableCap.ScissorTest);
+        GL.ColorMask(true, true, true, true);
+        GL.StencilMask(0xffffffff);
+        GL.StencilOp(StencilOp.Keep, StencilOp.Keep, StencilOp.Keep);
+        GL.StencilFunc(StencilFunction.Always, 0, 0xffffffff);
+        GL.ActiveTexture(TextureUnit.Texture0);
+        GL.BindTexture(TextureTarget.Texture2D, 0);
+
+        byte alpha = (byte)(DateTime.Now.Millisecond / 4 % 255);
+        var colors = new []
+        {
+            new Core.Domain.Color<byte>(255, 0, 0, alpha),
+            new Core.Domain.Color<byte>(0, 255, 0, alpha),
+            new Core.Domain.Color<byte>(0, 0, 255, alpha),
+            new Core.Domain.Color<byte>(0, 255, 0, alpha),
+            new Core.Domain.Color<byte>(255, 0, 0, alpha),
+            new Core.Domain.Color<byte>(0, 255, 0, alpha),
+            new Core.Domain.Color<byte>(0, 0, 255, alpha),
+        };
+
+        var width = 200;
+        for (int i = 0; i < colors.Length; i++)
+        {
+            if(i < colors.Length - 1)
+            {
+                var rect = new System.Drawing.RectangleF(i * width, 0, width, width);
+                var linearGradientBrush = new Brush.LinearGradientBrush(rect.X, rect.Y, rect.X + rect.Width, rect.Y) 
+                    {Color1 = colors[i], Color2 = colors[i + 1]};
+                this.DrawRect(rect, linearGradientBrush);
+            }
+        }
+
         
-        // GL.BlendFuncSeparate(BlendingFactorSrc.OneMinusSrcAlpha, BlendingFactorDest.OneMinusSrcAlpha, BlendingFactorSrc.One, BlendingFactorDest.Zero);
+        var colors2 = new []
+        {
+            new Core.Domain.Color<byte>(255, 0, 0, 255),
+            new Core.Domain.Color<byte>(0, 255, 0, 255),
+            new Core.Domain.Color<byte>(0, 0, 255, 255),
+            new Core.Domain.Color<byte>(0, 255, 0, 255),
+            new Core.Domain.Color<byte>(255, 0, 0, 255),
+            new Core.Domain.Color<byte>(0, 255, 0, 255),
+            new Core.Domain.Color<byte>(0, 0, 255, 255),
+        };
+        var angle = DateTime.Now.Millisecond / 5 / 200f * (float)Math.PI * 2;
+        for (int i = 0; i < colors.Length; i++)
+        {
+            if(i < colors.Length - 1)
+            {
+                
+                var rect = new System.Drawing.RectangleF(i * width, 200, width, width);
+                var radialGradientBrush = new Brush.RadialGradientBrush(rect.X + rect.Width / 2 * (1 + (float)Math.Sin(angle)), rect.Y + rect.Height / 2 *  (1 + (float)Math.Cos(angle)), 0, rect.Height / 2) 
+                    {Color1 = colors2[i], Color2 = colors2[i + 1]};
+                this.DrawRect(rect, radialGradientBrush);
+            }
+        }
 
+        
+        for (int i = 0; i < colors.Length; i++)
+        {
+            var color1 = colors2[i];
+            var color2 = colors2[i];
+            color2.a = 0;
+            var rect = new System.Drawing.RectangleF(i * width, 400, width, width);
+            var radialGradientBrush = new Brush.RadialGradientBrush(rect.X + rect.Width / 2 * (1 + (float)Math.Sin(angle)), rect.Y + rect.Height / 2 *  (1 + (float)Math.Cos(angle)), 0, rect.Height / 2) 
+                {Color1 = color1, Color2 = color2};
+            this.DrawRect(rect, radialGradientBrush);
+        }
 
-        // GL.Enable(EnableCap.CullFace);
-        // GL.CullFace(CullFaceMode.Back);
-        // GL.FrontFace(FrontFaceDirection.Ccw);
-        // GL.Enable(EnableCap.Blend);
-        // GL.Disable(EnableCap.DepthTest);
-        // GL.Disable(EnableCap.ScissorTest);
-        // GL.ColorMask(true, true, true, true);
-        // GL.StencilMask(0xffffffff);
-        // GL.StencilOp(StencilOp.Keep, StencilOp.Keep, StencilOp.Keep);
-        // GL.StencilFunc(StencilFunction.Always, 0, 0xffffffff);
-        // GL.ActiveTexture(TextureUnit.Texture0);
-        // GL.BindTexture(TextureTarget.Texture2D, 0);
+        for (int i = 0; i < colors.Length; i++)
+        {
+            var color1 = colors2[i];
+            var color2 = colors2[i];
+            color1.a = 0;
+            var rect = new System.Drawing.RectangleF(i * width, 600, width, width);
+            var radialGradientBrush = new Brush.RadialGradientBrush(rect.X + rect.Width / 2 * (1 + (float)Math.Sin(angle)), rect.Y + rect.Height / 2 *  (1 + (float)Math.Cos(angle)), 0, rect.Height / 2) 
+                {Color1 = color1, Color2 = color2};
+            this.DrawRect(rect, radialGradientBrush);
+        }
+        
+    }
 
+    private void DrawRect(System.Drawing.RectangleF rect, Brush.Brush brush)
+    {
         if(this.Shader is Shader shader)
         {
-
-            float x = 0, y = 0, w = 400, h = 400;
             shader.Use();
             GL.BindVertexArray(vao);
 
-
             var vertexes = new Vertex[]
             {
-                new Vertex(x, y, 0.5f, 1),
-                new Vertex(x, y + h, 0.5f, 1),
-                new Vertex(x + w, y + h, 0.5f, 1),
-                new Vertex(x + w, y, 0.5f, 1),
-
-                // new Vertex(x, y + h, 0.5f, 1),
-                // new Vertex(x + w, y + h, 0.5f, 1),
-                // new Vertex(x + w, y, 0.5f, 1),
-                // new Vertex(x, y + h, 0.5f, 1),
-                // new Vertex(x, y, 0.5f, 1),
+                new Vertex(rect.X, rect.Y, 0.5f, 1),
+                new Vertex(rect.X, rect.Y + rect.Height, 0.5f, 1),
+                new Vertex(rect.X + rect.Width, rect.Y + rect.Height, 0.5f, 1),
+                new Vertex(rect.X + rect.Width, rect.Y, 0.5f, 1),
             };
 
             GL.BindBuffer(BufferTarget.ArrayBuffer, vbo);
@@ -115,140 +176,7 @@ public class PixelWindow: GameWindow, Core.Domain.ISurface
             GL.VertexAttribPointer(shader["vertex"], 2, VertexAttribPointerType.Float, false, Marshal.SizeOf<Vertex>(), 0);
             GL.VertexAttribPointer(shader["tcoord"], 2, VertexAttribPointerType.Float, false, Marshal.SizeOf<Vertex>(), Marshal.SizeOf<float>() * 2);
             GL.Uniform2(shader["viewSize"], (float)this.Size.X, (float)this.Size.Y);
-
-            // GL.Uniform4(shader["frag"], GLFragUniforms.UNIFORMARRAY_SIZE, Extension.GetLinearGradient(x + w / 2 - 50, y, x + w / 2 + 50, y + h));
-
-            var lineGradinet = new Brush.LinearGradientBrush(x, y, x, y + h) 
-                {Color1 = new Core.Domain.Color<byte>(255, 0, 0, 25), Color2 = new Core.Domain.Color<byte>(255, 0, 0, 125)};
-            
-
-            GL.Uniform4(shader["frag"], GLFragUniforms.UNIFORMARRAY_SIZE, lineGradinet.GetData());
-            angle += 0.1f;
-            angle %= 360;
-
-
-            if(GL.GetError() is var err && err != OpenTK.Graphics.ES30.ErrorCode.NoError)
-                throw new Exception();
-
-            // GL.Enable(EnableCap.StencilTest);
-            // GL.StencilMask(0xff);
-
-            // GL.StencilFunc(StencilFunction.Equal, 0x00, 0xff);
-            // GL.StencilOp(StencilOp.Keep, StencilOp.Keep, StencilOp.Incr);
-            // GL.DrawArrays(PrimitiveType.TriangleFan, 0, vertexes.Length);
-
-
-
-            GL.StencilFunc(StencilFunction.Equal, 0x00, 0xff);
-            GL.StencilOp(StencilOp.Keep, StencilOp.Keep, StencilOp.Keep);
-            GL.DrawArrays(PrimitiveType.TriangleFan, 0, vertexes.Length);
-
-
-
-            // GL.StencilFunc(StencilFunction.Equal, 0x00, 0xff);
-            // GL.StencilOp(StencilOp.Zero, StencilOp.Zero, StencilOp.Zero);
-            // GL.DrawArrays(PrimitiveType.TriangleFan, 0, vertexes.Length);
-
-
-            // GL.ColorMask(true, true, true, true);
-            // GL.Disable(EnableCap.StencilTest);
-        }
-
-        // if(this.Shader is Shader shader0_2)
-        // {
-
-        //     float x = 500, y = 0, w = 400, h = 400;
-        //     shader0_2.Use();
-        //     GL.BindVertexArray(vao);
-
-
-        //     var vertexes = new Vertex[]
-        //     {
-
-        //         new Vertex(x, y, 0.5f, 1),
-        //         new Vertex(x, y + h, 0.5f, 1),
-        //         new Vertex(x + w, y + h, 0.5f, 1),
-        //         new Vertex(x + w, y, 0.5f, 1),
-
-        //     };
-
-        //     GL.BindBuffer(BufferTarget.ArrayBuffer, vbo);
-        //     GL.BufferData(BufferTarget.ArrayBuffer, (int)(Marshal.SizeOf(typeof(Vertex)) * vertexes.Count()), vertexes.ToArray(), BufferUsageHint.StreamDraw);
-
-        //     GL.VertexAttribPointer(shader0_2["vertex"], 2, VertexAttribPointerType.Float, false, Marshal.SizeOf<Vertex>(), 0);
-        //     GL.VertexAttribPointer(shader0_2["tcoord"], 2, VertexAttribPointerType.Float, false, Marshal.SizeOf<Vertex>(), Marshal.SizeOf<float>() * 2);
-        //     GL.Uniform2(shader0_2["viewSize"], (float)this.Size.X, (float)this.Size.Y);
-
-        //     // GL.Uniform4(shader["frag"], GLFragUniforms.UNIFORMARRAY_SIZE, Extension.GetLinearGradient(x + w / 2 - 50, y, x + w / 2 + 50, y + h));
-
-        //     var solidColorBrush = new Brush.SolidColorBursh() 
-        //         {Color = new Core.Domain.Color<float>(1f, 0f, 0f, 0.5f)};
-
-        //     GL.Uniform4(shader0_2["frag"], GLFragUniforms.UNIFORMARRAY_SIZE, solidColorBrush.GetData());
-        //     angle += 0.1f;
-        //     angle %= 360;
-
-
-        //     if(GL.GetError() is var err && err != OpenTK.Graphics.ES30.ErrorCode.NoError)
-        //         throw new Exception();
-
-        //     // GL.Enable(EnableCap.StencilTest);
-        //     // GL.StencilMask(0xff);
-
-        //     // GL.StencilFunc(StencilFunction.Equal, 0x00, 0xff);
-        //     // GL.StencilOp(StencilOp.Keep, StencilOp.Keep, StencilOp.Incr);
-        //     // GL.DrawArrays(PrimitiveType.TriangleFan, 0, vertexes.Length);
-
-
-
-        //     GL.StencilFunc(StencilFunction.Equal, 0x00, 0xff);
-        //     GL.StencilOp(StencilOp.Keep, StencilOp.Keep, StencilOp.Keep);
-        //     GL.DrawArrays(PrimitiveType.TriangleFan, 0, vertexes.Length);
-
-
-
-        //     // GL.StencilFunc(StencilFunction.Equal, 0x00, 0xff);
-        //     // GL.StencilOp(StencilOp.Zero, StencilOp.Zero, StencilOp.Zero);
-        //     // GL.DrawArrays(PrimitiveType.TriangleFan, 0, vertexes.Length);
-
-
-        //     // GL.ColorMask(true, true, true, true);
-        //     // GL.Disable(EnableCap.StencilTest);
-        // }
-
-        if(this.Shader is Shader shader2)
-        {
-
-            float x = 500, y = 0, w = 400, h = 400;
-            shader2.Use();
-            GL.BindVertexArray(vao);
-
-
-            var vertexes = new Vertex[]
-            {
-
-                new Vertex(x, y, 0.5f, 1),
-                new Vertex(x, y + h, 0.5f, 1),
-                new Vertex(x + w, y + h, 0.5f, 1),
-                new Vertex(x + w, y, 0.5f, 1),
-
-            };
-
-            GL.BindBuffer(BufferTarget.ArrayBuffer, vbo);
-            GL.BufferData(BufferTarget.ArrayBuffer, (int)(Marshal.SizeOf(typeof(Vertex)) * vertexes.Count()), vertexes.ToArray(), BufferUsageHint.StreamDraw);
-
-
-            GL.VertexAttribPointer(shader2["vertex"], 2, VertexAttribPointerType.Float, false, Marshal.SizeOf<Vertex>(), 0);
-            GL.VertexAttribPointer(shader2["tcoord"], 2, VertexAttribPointerType.Float, false, Marshal.SizeOf<Vertex>(), Marshal.SizeOf<float>() * 2);
-            GL.Uniform2(shader2["viewSize"], (float)this.Size.X, (float)this.Size.Y);
-
-            // GL.Uniform4(shader["frag"], GLFragUniforms.UNIFORMARRAY_SIZE, Extension.GetLinearGradient(x + w / 2 - 50, y, x + w / 2 + 50, y + h));
-             var radialGradient = new Brush.RadialGradientBrush(x + w / 2, y + h / 2, 0, h / 2) 
-                {Color1 = new Core.Domain.Color<byte>(255, 0, 0, 200), Color2 = new Core.Domain.Color<byte>(255, 0, 0, 25)};
-
-            GL.Uniform4(shader2["frag"], GLFragUniforms.UNIFORMARRAY_SIZE, radialGradient.GetData());
-            angle += 0.1f;
-            angle %= 360;
+            GL.Uniform4(shader["frag"], GLFragUniforms.UNIFORMARRAY_SIZE, brush.GetData());
 
 
             if(GL.GetError() is var err && err != OpenTK.Graphics.ES30.ErrorCode.NoError)
@@ -277,61 +205,6 @@ public class PixelWindow: GameWindow, Core.Domain.ISurface
             GL.ColorMask(true, true, true, true);
             GL.Disable(EnableCap.StencilTest);
         }
-
-        // GL.Enable(EnableCap.Blend);
-        // GL.BlendFunc(BlendingFactorSrc.One, BlendingFactorDest.OneMinusSrcAlpha);
-
-        // if(this.Shader is Shader shader_0)
-        // {
-        //     shader_0.Use();
-        //     GL.BindVertexArray(vao);
-
-
-        //     var vertexes = new Vertex[]
-        //     {
-        //         new Vertex(300, 0, 0.5f, 1),
-        //         new Vertex(100, 300, 0.5f, 0.5f),
-        //         new Vertex(500, 300, 0.5f, 1),
-        //     };
-
-        //     GL.BindBuffer(BufferTarget.ArrayBuffer, vbo);
-        //     GL.BufferData(BufferTarget.ArrayBuffer, (int)(Marshal.SizeOf(typeof(Vertex)) * vertexes.Count()), vertexes.ToArray(), BufferUsageHint.StreamDraw);
-
-
-        //     GL.VertexAttribPointer(shader_0["vertex"], 2, VertexAttribPointerType.Float, false, Marshal.SizeOf<Vertex>(), 0);
-        //     GL.VertexAttribPointer(shader_0["tcoord"], 2, VertexAttribPointerType.Float, false, Marshal.SizeOf<Vertex>(), Marshal.SizeOf<float>() * 2);
-        //     GL.Uniform2(shader_0["viewSize"], (float)this.Size.X, (float)this.Size.Y);
-
-
-        //     GL.Uniform4(shader_0["frag"], GLFragUniforms.UNIFORMARRAY_SIZE, frag.Floats);
-
-
-        //     if(GL.GetError() is var err && err != OpenTK.Graphics.ES30.ErrorCode.NoError)
-        //         throw new Exception();
-
-        //     GL.Enable(EnableCap.StencilTest);
-        //     GL.StencilMask(0xff);
-
-        //     GL.StencilFunc(StencilFunction.Equal, 0x00, 0xff);
-        //     GL.StencilOp(StencilOp.Keep, StencilOp.Keep, StencilOp.Incr);
-        //     GL.DrawArrays(PrimitiveType.TriangleStrip, 0, vertexes.Length);
-
-
-
-        //     GL.StencilFunc(StencilFunction.Equal, 0x00, 0xff);
-        //     GL.StencilOp(StencilOp.Keep, StencilOp.Keep, StencilOp.Keep);
-        //     GL.DrawArrays(PrimitiveType.TriangleStrip, 0, vertexes.Length);
-
-
-
-        //     GL.StencilFunc(StencilFunction.Equal, 0x00, 0xff);
-        //     GL.StencilOp(StencilOp.Zero, StencilOp.Zero, StencilOp.Zero);
-        //     GL.DrawArrays(PrimitiveType.TriangleStrip, 0, vertexes.Length);
-
-
-        //     GL.ColorMask(true, true, true, true);
-        //     GL.Disable(EnableCap.StencilTest);
-        // }
     }
 
     public void OnUpdateSurface()
