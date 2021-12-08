@@ -1,4 +1,6 @@
 ﻿Console.WriteLine("Hello, World!");
 
 
-new Pixel.PixelEngine(new Pixel.GLES.PixelWindow(1920, 1080)).Start();
+var engine = new Pixel.PixelEngine<float>(new Pixel.GLES.PixelWindow(1920, 1080), new Pixel.GLES.Graphics());
+
+engine.Start();

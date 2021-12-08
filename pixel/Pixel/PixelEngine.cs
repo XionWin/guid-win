@@ -2,14 +2,22 @@
 
 namespace Pixel;
 
-public delegate void PixelEngineRenderHandle(IGraphic<float> graphic);
-public class PixelEngine
+public class PixelEngine<T>
 {
-    public Core.Domain.ISurface? Surface { get; init; }
+    public Core.Domain.ISurface<T>? Surface { get; init; }
+    public Core.Domain.IGraphic<T>? Graphic { get; init; }
 
-    public event PixelEngineRenderHandle? OnRender;
 
-    public PixelEngine(Core.Domain.ISurface surface) => this.Surface = surface;
+    public PixelEngine(Core.Domain.ISurface<T> surface, Core.Domain.IGraphic<T> graphic)
+    {
+        this.Surface = surface;
+        this.Graphic = graphic;
+
+        surface.OnSurfaceLoad += this.Graphic.OnLoad;
+        surface.OnSurfaceRender += this.Graphic.OnRender;
+        surface.OnSurfaceResize += this.Graphic.OnResize;
+        surface.OnSurfaceUnload += this.Graphic.OnUnLoad;
+    }
 
     public void Start() => this.Surface?.Start();
 
