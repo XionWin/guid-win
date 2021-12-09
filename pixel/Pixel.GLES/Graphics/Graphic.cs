@@ -2,18 +2,19 @@ using System.Runtime.InteropServices;
 using OpenTK.Graphics.ES30;
 using OpenTK.Mathematics;
 using Pixel.Core.Domain;
+using Pixel.GLES.Brushes;
 
-namespace Pixel.GLES;
+namespace Pixel.GLES.Graphics;
 
-public class Graphics : Pixel.Core.Domain.IGraphic<float>
+public class Graphic : Pixel.Core.Domain.IGraphic<float>
 {
     public System.Drawing.Size Size { get; set; }
-    public IBrush<float> Background { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-    public IBrush<float> StrokeColor { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+    public IBrush<float>? Background { get; set; }
+    public IBrush<float>? StrokeColor { get; set; }
 
     public Shader? Shader { get; init; }
     private uint vbo, vao;
-    public Graphics()
+    public Graphic()
     {
         this.Shader = new Shader().Load("resources/shaders/shader.vert", "resources/shaders/shader.frag", new[] { "vertex", "tcoord" });
     }
@@ -63,7 +64,7 @@ public class Graphics : Pixel.Core.Domain.IGraphic<float>
             if(i < colors.Length - 1)
             {
                 var rect = new System.Drawing.RectangleF(i * width, 0, width, width);
-                var linearGradientBrush = new Brush.LinearGradientBrush(rect.X, rect.Y, rect.X + rect.Width, rect.Y) 
+                var linearGradientBrush = new LinearGradientBrush(rect.X, rect.Y, rect.X + rect.Width, rect.Y) 
                     {Color1 = colors[i], Color2 = colors[i + 1]};
                 this.DrawRect(rect, linearGradientBrush);
             }
@@ -86,7 +87,7 @@ public class Graphics : Pixel.Core.Domain.IGraphic<float>
             {
                 
                 var rect = new System.Drawing.RectangleF(i * width, 200, width, width);
-                var radialGradientBrush = new Brush.RadialGradientBrush(rect.X + rect.Width / 2 * (1 + (float)Math.Cos(angle)), rect.Y + rect.Height / 2 *  (1 + (float)Math.Sin(angle)), 0, rect.Height / 2) 
+                var radialGradientBrush = new RadialGradientBrush(rect.X + rect.Width / 2 * (1 + (float)Math.Cos(angle)), rect.Y + rect.Height / 2 *  (1 + (float)Math.Sin(angle)), 0, rect.Height / 2) 
                     {Color1 = colors2[i], Color2 = colors2[i + 1]};
                 this.DrawRect(rect, radialGradientBrush);
             }
@@ -99,7 +100,7 @@ public class Graphics : Pixel.Core.Domain.IGraphic<float>
             var color2 = colors2[i];
             color2.a = 0;
             var rect = new System.Drawing.RectangleF(i * width, 400, width, width);
-            var radialGradientBrush = new Brush.RadialGradientBrush(rect.X + rect.Width / 2 * (1 + (float)Math.Cos(angle)), rect.Y + rect.Height / 2 *  (1 + (float)Math.Sin(angle)), 0, rect.Height / 2) 
+            var radialGradientBrush = new RadialGradientBrush(rect.X + rect.Width / 2 * (1 + (float)Math.Cos(angle)), rect.Y + rect.Height / 2 *  (1 + (float)Math.Sin(angle)), 0, rect.Height / 2) 
                 {Color1 = color1, Color2 = color2};
             this.DrawRect(rect, radialGradientBrush);
         }
@@ -110,7 +111,7 @@ public class Graphics : Pixel.Core.Domain.IGraphic<float>
             var color2 = colors2[i];
             color1.a = 0;
             var rect = new System.Drawing.RectangleF(i * width, 600, width, width);
-            var radialGradientBrush = new Brush.RadialGradientBrush(rect.X + rect.Width / 2 * (1 + (float)Math.Cos(angle)), rect.Y + rect.Height / 2 *  (1 + (float)Math.Sin(angle)), 0, rect.Height / 2) 
+            var radialGradientBrush = new RadialGradientBrush(rect.X + rect.Width / 2 * (1 + (float)Math.Cos(angle)), rect.Y + rect.Height / 2 *  (1 + (float)Math.Sin(angle)), 0, rect.Height / 2) 
                 {Color1 = color1, Color2 = color2};
             this.DrawRect(rect, radialGradientBrush);
         }
@@ -137,7 +138,7 @@ public class Graphics : Pixel.Core.Domain.IGraphic<float>
         throw new NotImplementedException();
     }
 
-    private void DrawRect(System.Drawing.RectangleF rect, Brush.Brush brush)
+    private void DrawRect(System.Drawing.RectangleF rect, Brush brush)
     {
         if(this.Shader is Shader shader)
         {
@@ -158,7 +159,7 @@ public class Graphics : Pixel.Core.Domain.IGraphic<float>
             GL.VertexAttribPointer(shader["vertex"], 2, VertexAttribPointerType.Float, false, Marshal.SizeOf<Vertex>(), 0);
             GL.VertexAttribPointer(shader["tcoord"], 2, VertexAttribPointerType.Float, false, Marshal.SizeOf<Vertex>(), Marshal.SizeOf<float>() * 2);
             GL.Uniform2(shader["viewSize"], (float)this.Size.Width, (float)this.Size.Height);
-            GL.Uniform4(shader["frag"], Brush.GLFragUniforms.UNIFORMARRAY_SIZE, brush.GetData());
+            GL.Uniform4(shader["frag"], GLFragUniforms.UNIFORMARRAY_SIZE, brush.GetData());
 
 
             if(GL.GetError() is var err && err != OpenTK.Graphics.ES30.ErrorCode.NoError)

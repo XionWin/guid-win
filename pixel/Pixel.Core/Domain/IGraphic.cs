@@ -2,8 +2,8 @@ namespace Pixel.Core.Domain;
 
 public interface IGraphic<T>
 {
-    IBrush<T> Background { get; set; }
-    IBrush<T> StrokeColor { get; set; }
+    IBrush<T>? Background { get; set; }
+    IBrush<T>? StrokeColor { get; set; }
 
     void OnLoad();
 

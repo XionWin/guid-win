@@ -1,6 +1,6 @@
 using OpenTK.Mathematics;
 
-namespace Pixel.GLES.Brush;
+namespace Pixel.GLES.Brushes;
 
 public class LinearGradientBrush: GradientBrush
 {

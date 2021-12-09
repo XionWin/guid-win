@@ -1,6 +1,6 @@
 using OpenTK.Mathematics;
 
-namespace Pixel.GLES.Brush;
+namespace Pixel.GLES.Brushes;
 
 public class SolidColorBursh: Pixel.Core.Domain.IBrush<float>
 {

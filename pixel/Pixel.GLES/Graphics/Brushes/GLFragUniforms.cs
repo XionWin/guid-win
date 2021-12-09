@@ -1,7 +1,7 @@
 using System.Runtime.InteropServices;
 using OpenTK.Mathematics;
 
-namespace Pixel.GLES.Brush;
+namespace Pixel.GLES.Brushes;
 
 [StructLayout(LayoutKind.Sequential, Pack = 1)]
 public class GLFragUniforms
