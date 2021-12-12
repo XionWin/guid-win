@@ -4,8 +4,8 @@ namespace Pixel.GLES.Brushes;
 
 public class LinearGradientBrush: GradientBrush
 {
-    private Pixel.Core.Domain.Color<byte> color1;
-    public Pixel.Core.Domain.Color<byte> Color1
+    private Pixel.Core.Domain.Color color1;
+    public Pixel.Core.Domain.Color Color1
     {
         get => this.color1;
         set
@@ -14,8 +14,8 @@ public class LinearGradientBrush: GradientBrush
             this.FragUniforms.InnerColor = ConvertColor(value);
         }
     }
-    private Pixel.Core.Domain.Color<byte> color2;
-    public Pixel.Core.Domain.Color<byte> Color2
+    private Pixel.Core.Domain.Color color2;
+    public Pixel.Core.Domain.Color Color2
     {
         get => this.color2;
         set

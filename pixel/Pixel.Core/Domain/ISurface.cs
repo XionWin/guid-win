@@ -1,11 +1,11 @@
 namespace Pixel.Core.Domain;
 
-public interface ISurface<T>
+public interface ISurface
 {
-    event Action OnSurfaceLoad;
-    event Action OnSurfaceRender;
-    event Action<System.Drawing.Size> OnSurfaceResize;
-    event Action OnSurfaceUnload;
+    event Action OnInit;
+    event Action OnRender;
+    event Action<System.Drawing.Size> OnSizeChange;
+    event Action OnEnd;
 
     void Start();
 }

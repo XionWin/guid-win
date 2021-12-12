@@ -20,7 +20,7 @@ public abstract class Brush: Pixel.Core.Domain.IBrush<float>
         this.FragUniforms.StrokeThr = 1;
         this.FragUniforms.Type = 2;
     }
-    protected Vector4 ConvertColor(Pixel.Core.Domain.Color<byte> color)
+    protected Vector4 ConvertColor(Pixel.Core.Domain.Color color)
     {
         var a = color.a /255f;
         return new Vector4(color.r /255f * a, color.g  /255f * a, color.b  /255f * a,  a);

@@ -18,7 +18,7 @@ public class Graphic : Pixel.Core.Domain.IGraphic<float>
     {
         this.Shader = new Shader().Load("resources/shaders/shader.vert", "resources/shaders/shader.frag", new[] { "vertex", "tcoord" });
     }
-    public void OnLoad()
+    public void OnInit()
     {
         GL.ClearColor(0.3f, 0.3f, 0.3f, 1);
         vao = (uint)GL.GenVertexArray();
@@ -46,16 +46,16 @@ public class Graphic : Pixel.Core.Domain.IGraphic<float>
         GL.ActiveTexture(TextureUnit.Texture0);
         GL.BindTexture(TextureTarget.Texture2D, 0);
 
-        byte alpha = 255; //(byte)(DateTime.Now.Millisecond / 4 % 255);
+        byte alpha = 255; //(byte)(DateTime.Now.Millisecond / 4 %
         var colors = new []
         {
-            new Core.Domain.Color<byte>(255, 0, 0, alpha),
-            new Core.Domain.Color<byte>(0, 255, 0, alpha),
-            new Core.Domain.Color<byte>(0, 0, 255, alpha),
-            new Core.Domain.Color<byte>(0, 255, 0, alpha),
-            new Core.Domain.Color<byte>(255, 0, 0, alpha),
-            new Core.Domain.Color<byte>(0, 255, 0, alpha),
-            new Core.Domain.Color<byte>(0, 0, 255, alpha),
+            new Core.Domain.Color(255, 0, 0, alpha),
+            new Core.Domain.Color(0, 255, 0, alpha),
+            new Core.Domain.Color(0, 0, 255, alpha),
+            new Core.Domain.Color(0, 255, 0, alpha),
+            new Core.Domain.Color(255, 0, 0, alpha),
+            new Core.Domain.Color(0, 255, 0, alpha),
+            new Core.Domain.Color(0, 0, 255, alpha),
         };
 
         var width = 200;
@@ -72,13 +72,13 @@ public class Graphic : Pixel.Core.Domain.IGraphic<float>
 
         var colors2 = new []
         {
-            new Core.Domain.Color<byte>(255, 0, 0, 255),
-            new Core.Domain.Color<byte>(0, 255, 0, 255),
-            new Core.Domain.Color<byte>(0, 0, 255, 255),
-            new Core.Domain.Color<byte>(0, 255, 0, 255),
-            new Core.Domain.Color<byte>(255, 0, 0, 255),
-            new Core.Domain.Color<byte>(0, 255, 0, 255),
-            new Core.Domain.Color<byte>(0, 0, 255, 255),
+            new Core.Domain.Color(255, 0, 0, 255),
+            new Core.Domain.Color(0, 255, 0, 255),
+            new Core.Domain.Color(0, 0, 255, 255),
+            new Core.Domain.Color(0, 255, 0, 255),
+            new Core.Domain.Color(255, 0, 0, 255),
+            new Core.Domain.Color(0, 255, 0, 255),
+            new Core.Domain.Color(0, 0, 255, 255),
         };
         var angle = DateTime.Now.Millisecond / 5 / 200f * (float)Math.PI * 2;
         for (int i = 0; i < colors.Length; i++)
@@ -117,13 +117,13 @@ public class Graphic : Pixel.Core.Domain.IGraphic<float>
         }
     }
 
-    public void OnResize(System.Drawing.Size size)
+    public void OnSizeChange(System.Drawing.Size size)
     {
         GL.Viewport(0, 0, size.Width, size.Height);
         this.Size = size;
     }
 
-    public void OnUnLoad()
+    public void OnEnd()
     {
         throw new NotImplementedException();
     }

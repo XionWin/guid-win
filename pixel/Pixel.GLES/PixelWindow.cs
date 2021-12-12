@@ -8,7 +8,7 @@ using Pixel.Core;
 using Pixel.Core.Domain;
 
 namespace Pixel.GLES;
-public class PixelWindow: GameWindow, Core.Domain.ISurface<float>
+public class PixelWindow: GameWindow, Core.Domain.ISurface
 {
     private readonly static byte[] ICON_DATA = new byte[]
     {
@@ -35,10 +35,10 @@ public class PixelWindow: GameWindow, Core.Domain.ISurface<float>
     {
     }
 
-    public event Action? OnSurfaceLoad;
-    public event Action? OnSurfaceRender;
-    public event Action<System.Drawing.Size>? OnSurfaceResize;
-    public event Action? OnSurfaceUnload;
+    public event Action? OnInit;
+    public event Action? OnRender;
+    public event Action<System.Drawing.Size>? OnSizeChange;
+    public event Action? OnEnd;
 
 
     public void Start()
@@ -49,14 +49,14 @@ public class PixelWindow: GameWindow, Core.Domain.ISurface<float>
     protected override void OnLoad()
     {
         base.OnLoad();
-        this.OnSurfaceLoad?.Invoke();
+        this.OnInit?.Invoke();
     }
 
 
     protected override void OnRenderFrame(FrameEventArgs args)
     {
         base.OnRenderFrame(args);
-        this.OnSurfaceRender?.Invoke();
+        this.OnRender?.Invoke();
         SwapBuffers();
     }
 
@@ -67,12 +67,12 @@ public class PixelWindow: GameWindow, Core.Domain.ISurface<float>
 
     protected override void OnResize(ResizeEventArgs e)
     {
-        this.OnSurfaceResize?.Invoke(new System.Drawing.Size(e.Width, e.Height)); 
+        this.OnSizeChange?.Invoke(new System.Drawing.Size(e.Width, e.Height)); 
         base.OnResize(e);
     }
     protected override void OnUnload()
     {
         base.OnUnload();
-        this.OnSurfaceUnload?.Invoke();
+        this.OnEnd?.Invoke();
     }
 }

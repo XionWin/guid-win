@@ -6,8 +6,8 @@ public class SolidColorBursh: Pixel.Core.Domain.IBrush<float>
 {
     public GLFragUniforms FragUniforms { get; } = new GLFragUniforms();
 
-    private Pixel.Core.Domain.Color<byte> color;
-    public Pixel.Core.Domain.Color<byte> Color
+    private Pixel.Core.Domain.Color color;
+    public Pixel.Core.Domain.Color Color
     {
         get => this.color;
         set
@@ -34,7 +34,8 @@ public class SolidColorBursh: Pixel.Core.Domain.IBrush<float>
     {
         return this.FragUniforms.GetData();
     }
-    protected Vector4 ConvertColor(Pixel.Core.Domain.Color<byte> color)
+    
+    protected Vector4 ConvertColor(Pixel.Core.Domain.Color color)
     {
         var a = color.a /255f;
         return new Vector4(color.r /255f * a, color.g  /255f * a, color.b  /255f * a,  a);

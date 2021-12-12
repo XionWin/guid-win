@@ -5,13 +5,13 @@ public interface IGraphic<T>
     IBrush<T>? Background { get; set; }
     IBrush<T>? StrokeColor { get; set; }
 
-    void OnLoad();
+    void OnInit();
 
     void OnRender();
 
-    void OnResize(System.Drawing.Size size);
+    void OnSizeChange(System.Drawing.Size size);
     
-    void OnUnLoad();
+    void OnEnd();
 
     void FillRect(Rect<T> rect);
     void StrokeRect(Rect<T> rect);

@@ -3,25 +3,18 @@ using System.Runtime.InteropServices;
 namespace Pixel.Core.Domain;
 
 [StructLayout(LayoutKind.Sequential)]
-public struct Color<T>
+public struct Color
 {
-    public T r;
-    public T g;
-    public T b;
-    public T a;
+    public byte r;
+    public byte g;
+    public byte b;
+    public byte a;
 
-    public Color(T r, T g, T b, T a)
+    public Color(byte r, byte g, byte b, byte a)
     {
         this.r = r;
         this.g = g;
         this.b = b;
         this.a = a;
     }
-
-
-    public static Color<T> From(IEnumerable<T> values)
-    {
-        return values.ToArray() is var array && array.Length == 4 ? new Color<T>(array[0], array[1], array[2], array[3]) : throw new Exception(); 
-    }
-    public T[] GetData => new T[]{r, g, b, a};
 }
