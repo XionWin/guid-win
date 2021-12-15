@@ -11,11 +11,13 @@ public class PixelEngine<T>
     {
         this.Surface = surface;
         this.Graphic = graphic;
-
-        surface.OnInit += this.Graphic.OnInit;
-        surface.OnRender += this.Graphic.OnRender;
-        surface.OnSizeChange += this.Graphic.OnSizeChange;
-        surface.OnEnd += this.Graphic.OnEnd;
+        if (this.Graphic.Render is IRender<T> render)
+        {
+            surface.OnInit += render.OnInit;
+            surface.OnRender += render.OnRender;
+            surface.OnSizeChange += render.OnSizeChange;
+            surface.OnEnd += render.OnEnd;
+        }
     }
 
     public void Start() => this.Surface?.Start();

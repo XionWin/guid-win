@@ -2,9 +2,14 @@ namespace Pixel.Core.Domain;
 
 public interface IGraphic<T>
 {
-    IBrush<T>? Background { get; set; }
-    IBrush<T>? StrokeColor { get; set; }
+    IRender<T>? Render { get; }
+    IEnumerable<IShape>? Shapes { get; }
+}
 
+
+public interface IRender<T>
+{
+    public System.Drawing.Size Size { get; set; }
     void OnInit();
 
     void OnRender();
@@ -13,6 +18,9 @@ public interface IGraphic<T>
     
     void OnEnd();
 
-    void FillRect(Rect<T> rect);
-    void StrokeRect(Rect<T> rect);
 }
+
+
+
+
+

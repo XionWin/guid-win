@@ -1,6 +1,8 @@
+using Pixel.Core.Enums;
+
 namespace Pixel.Core.Domain;
 
-public interface ICommand<T>
+public interface ICommand
 {
-    
+    CommandType Type { get; }
 }
