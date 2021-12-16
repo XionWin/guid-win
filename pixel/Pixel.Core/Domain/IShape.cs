@@ -2,6 +2,8 @@ namespace Pixel.Core.Domain;
 
 public interface IShape
 {
-    Matrix.Matrix2x3 matrix { get; set; }
+    System.Numerics.Matrix3x2 Matrix { get; set; }
+    System.Drawing.PointF Center { get; }
+    
     IEnumerable<ICommand> Commands { get; }
 }
