@@ -24,6 +24,7 @@ public class Render: Core.Domain.IRender<float>
         vbo = (uint)GL.GenBuffer();
     }
 
+    private static float angle = 0;
     public void OnRender()
     {
         GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit | ClearBufferMask.StencilBufferBit);
@@ -57,13 +58,21 @@ public class Render: Core.Domain.IRender<float>
             new Core.Domain.Color(0, 0, 255, alpha),
         };
 
+        angle += 0.5f;
+
+        if (angle > 360)
+            angle %= 360;
+
         var width = 200;
         for (int i = 0; i < colors.Length; i++)
         {
             if(i < colors.Length - 1)
             {
                 var rectShape = new Shapes.Rectangle(i * width, 0, width, width);
-                var linearGradientBrush = new LinearGradientBrush(rectShape.Rect.X, rectShape.Rect.Y, rectShape.Rect.X + rectShape.Rect.Width, rectShape.Rect.Y) 
+                rectShape.Angle = angle;
+                var topLeft = rectShape.Topleft;
+                var bottomLeft = rectShape.BottomLeft;
+                var linearGradientBrush = new LinearGradientBrush(topLeft.X, topLeft.Y, bottomLeft.X, bottomLeft.Y) 
                     {Color1 = colors[i], Color2 = colors[i + 1]};
                 this.DrawRect(rectShape, linearGradientBrush);
             }
@@ -127,15 +136,6 @@ public class Render: Core.Domain.IRender<float>
         throw new NotImplementedException();
     }
 
-    public void FillRect(Rect rect)
-    {
-        throw new NotImplementedException();
-    }
-
-    public void StrokeRect(Rect rect)
-    {
-        throw new NotImplementedException();
-    }
     
     private void DrawRect(Shapes.Rectangle rect, Brush brush)
     {

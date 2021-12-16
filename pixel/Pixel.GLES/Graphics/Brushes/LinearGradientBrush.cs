@@ -34,6 +34,12 @@ public class LinearGradientBrush: GradientBrush
         this.End = new System.Drawing.PointF(ex, ey);
     }
 
+    private System.Numerics.Matrix3x2 mat = new System.Numerics.Matrix3x2(1, 0, 0, 1, 0, 0);
+    public void SetMatrix(System.Numerics.Matrix3x2 mat)
+    {
+        this.mat = mat;
+    }
+
     public override float[] GetData()
     {
         float dx, dy, d;
