@@ -1,13 +1,13 @@
 namespace Pixel.Core.Domain;
 
-public interface IGraphic<T>
+public interface IGraphic
 {
-    IRender<T>? Render { get; }
+    IRender Render { get; }
     IEnumerable<IShape>? Shapes { get; }
 }
 
 
-public interface IRender<T>
+public interface IRender
 {
     public System.Drawing.Size Size { get; set; }
     void OnInit();

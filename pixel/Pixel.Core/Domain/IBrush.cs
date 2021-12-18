@@ -1,7 +1,7 @@
 namespace Pixel.Core.Domain;
 
-public interface IBrush<T>
+public interface IBrush
 {
-    T[] GetData();
+    float[] GetData();
 }
 

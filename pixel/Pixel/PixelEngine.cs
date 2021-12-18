@@ -2,22 +2,19 @@
 
 namespace Pixel;
 
-public class PixelEngine<T>
+public class PixelEngine
 {
     public Core.Domain.ISurface? Surface { get; init; }
-    public Core.Domain.IGraphic<T>? Graphic { get; init; }
+    public Core.Domain.IGraphic? Graphic { get; init; }
 
-    public PixelEngine(Core.Domain.ISurface surface, Core.Domain.IGraphic<T> graphic)
+    public PixelEngine(Core.Domain.ISurface surface, Core.Domain.IGraphic graphic)
     {
         this.Surface = surface;
         this.Graphic = graphic;
-        if (this.Graphic.Render is IRender<T> render)
-        {
-            surface.OnInit += render.OnInit;
-            surface.OnRender += render.OnRender;
-            surface.OnSizeChange += render.OnSizeChange;
-            surface.OnEnd += render.OnEnd;
-        }
+        surface.OnInit += this.Graphic.Render.OnInit;
+        surface.OnRender += this.Graphic.Render.OnRender;
+        surface.OnSizeChange += this.Graphic.Render.OnSizeChange;
+        surface.OnEnd += this.Graphic.Render.OnEnd;
     }
 
     public void Start() => this.Surface?.Start();

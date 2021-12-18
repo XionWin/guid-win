@@ -41,7 +41,7 @@ public class RadialGradientBrush: GradientBrush
         float r = (InR + OutR) * 0.5f;
         float f = (OutR - InR);
 
-        var xform = new Matrix3x4();
+        var xform = new Matrix3();
         xform.Row0.X = 1;
         xform.Row0.Y = 0;
         xform.Row1.X = 0;

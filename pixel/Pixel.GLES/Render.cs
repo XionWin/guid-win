@@ -1,3 +1,4 @@
+using System.Drawing;
 using System.Runtime.InteropServices;
 using OpenTK.Graphics.ES30;
 using OpenTK.Mathematics;
@@ -6,7 +7,7 @@ using Pixel.GLES.Brushes;
 
 namespace Pixel.GLES.Graphics;
 
-public class Render: Core.Domain.IRender<float>
+public class Render: Core.Domain.IRender
 {
     public System.Drawing.Size Size { get; set; }
     public Shader? Shader { get; init; }
@@ -25,6 +26,7 @@ public class Render: Core.Domain.IRender<float>
     }
 
     private static float angle = 0;
+    private static float angle_inner = 0;
     public void OnRender()
     {
         GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit | ClearBufferMask.StencilBufferBit);
@@ -78,51 +80,57 @@ public class Render: Core.Domain.IRender<float>
             }
         }
 
-        // var colors2 = new []
-        // {
-        //     new Core.Domain.Color(255, 0, 0, 255),
-        //     new Core.Domain.Color(0, 255, 0, 255),
-        //     new Core.Domain.Color(0, 0, 255, 255),
-        //     new Core.Domain.Color(0, 255, 0, 255),
-        //     new Core.Domain.Color(255, 0, 0, 255),
-        //     new Core.Domain.Color(0, 255, 0, 255),
-        //     new Core.Domain.Color(0, 0, 255, 255),
-        // };
-        // var angle = DateTime.Now.Millisecond / 5 / 200f * (float)Math.PI * 2;
-        // for (int i = 0; i < colors.Length; i++)
-        // {
-        //     if(i < colors.Length - 1)
-        //     {
+        var colors2 = new []
+        {
+            new Core.Domain.Color(255, 0, 0, 255),
+            new Core.Domain.Color(0, 255, 0, 255),
+            new Core.Domain.Color(0, 0, 255, 255),
+            new Core.Domain.Color(0, 255, 0, 255),
+            new Core.Domain.Color(255, 0, 0, 255),
+            new Core.Domain.Color(0, 255, 0, 255),
+            new Core.Domain.Color(0, 0, 255, 255),
+        };
+        for (int i = 0; i < colors.Length; i++)
+        {
+            if(i < colors.Length - 1)
+            {
                 
-        //         var rect = new System.Drawing.RectangleF(i * width, 200, width, width);
-        //         var radialGradientBrush = new RadialGradientBrush(rect.X + rect.Width / 2 * (1 + (float)Math.Cos(angle)), rect.Y + rect.Height / 2 *  (1 + (float)Math.Sin(angle)), 0, rect.Height / 2) 
-        //             {Color1 = colors2[i], Color2 = colors2[i + 1]};
-        //         this.DrawRect(rect, radialGradientBrush);
-        //     }
-        // }
+                var rectShape = new Shapes.Rectangle(i * width, 200, width, width);
+                rectShape.Angle = angle;
+                var rect = rectShape.Rect;
+                var point = new PointF(rect.X, rect.Y + rect.Height / 2);
+                point = rectShape.Transform(point, rectShape.Matrix);
+                var radialGradientBrush = new RadialGradientBrush(point.X, point.Y, 0, rect.Height) 
+                    {Color1 = colors2[i], Color2 = colors2[i + 1]};
+                this.DrawRect(rectShape, radialGradientBrush);
+            }
+        }
 
-        
-        // for (int i = 0; i < colors.Length; i++)
-        // {
-        //     var color1 = colors2[i];
-        //     var color2 = colors2[i];
-        //     color2.a = 0;
-        //     var rect = new System.Drawing.RectangleF(i * width, 400, width, width);
-        //     var radialGradientBrush = new RadialGradientBrush(rect.X + rect.Width / 2 * (1 + (float)Math.Cos(angle)), rect.Y + rect.Height / 2 *  (1 + (float)Math.Sin(angle)), 0, rect.Height / 2) 
-        //         {Color1 = color1, Color2 = color2};
-        //     this.DrawRect(rect, radialGradientBrush);
-        // }
+        angle_inner += 0.1f;
 
-        // for (int i = 0; i < colors.Length; i++)
-        // {
-        //     var color1 = colors2[i];
-        //     var color2 = colors2[i];
-        //     color1.a = 0;
-        //     var rect = new System.Drawing.RectangleF(i * width, 600, width, width);
-        //     var radialGradientBrush = new RadialGradientBrush(rect.X + rect.Width / 2 * (1 + (float)Math.Cos(angle)), rect.Y + rect.Height / 2 *  (1 + (float)Math.Sin(angle)), 0, rect.Height / 2) 
-        //         {Color1 = color1, Color2 = color2};
-        //     this.DrawRect(rect, radialGradientBrush);
-        // }
+        if (angle_inner > 360)
+            angle_inner %= 360;
+        for (int i = 0; i < colors.Length; i++)
+        {
+            var color1 = colors2[i];
+            var color2 = colors2[i];
+            color2.a = 0;
+            var rect = new System.Drawing.RectangleF(i * width, 400, width, width);
+            var radialGradientBrush = new RadialGradientBrush(rect.X + rect.Width / 2 * (1 + (float)Math.Cos(angle_inner)), rect.Y + rect.Height / 2 *  (1 + (float)Math.Sin(angle_inner)), 0, rect.Height / 2) 
+                {Color1 = color1, Color2 = color2};
+            this.DrawRect(rect, radialGradientBrush);
+        }
+
+        for (int i = 0; i < colors.Length; i++)
+        {
+            var color1 = colors2[i];
+            var color2 = colors2[i];
+            color1.a = 0;
+            var rect = new System.Drawing.RectangleF(i * width, 600, width, width);
+            var radialGradientBrush = new RadialGradientBrush(rect.X + rect.Width / 2 * (1 + (float)Math.Cos(angle_inner)), rect.Y + rect.Height / 2 *  (1 + (float)Math.Sin(angle_inner)), 0, rect.Height / 2) 
+                {Color1 = color1, Color2 = color2};
+            this.DrawRect(rect, radialGradientBrush);
+        }
     }
 
     public void OnSizeChange(System.Drawing.Size size)

@@ -2,7 +2,7 @@ using OpenTK.Mathematics;
 
 namespace Pixel.GLES.Brushes;
 
-public class SolidColorBursh: Pixel.Core.Domain.IBrush<float>
+public class SolidColorBursh: Pixel.Core.Domain.IBrush
 {
     public GLFragUniforms FragUniforms { get; } = new GLFragUniforms();
 

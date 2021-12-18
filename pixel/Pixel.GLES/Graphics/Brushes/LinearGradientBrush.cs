@@ -34,12 +34,6 @@ public class LinearGradientBrush: GradientBrush
         this.End = new System.Drawing.PointF(ex, ey);
     }
 
-    private System.Numerics.Matrix3x2 mat = new System.Numerics.Matrix3x2(1, 0, 0, 1, 0, 0);
-    public void SetMatrix(System.Numerics.Matrix3x2 mat)
-    {
-        this.mat = mat;
-    }
-
     public override float[] GetData()
     {
         float dx, dy, d;
@@ -58,7 +52,7 @@ public class LinearGradientBrush: GradientBrush
             dy = 1;
         }
 
-        var xform = new Matrix3x4();
+        var xform = new Matrix3();
         xform.Row0.X = dy;
         xform.Row0.Y = -dx;
         xform.Row1.X = dx;

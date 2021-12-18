@@ -2,6 +2,7 @@
 using System.Drawing;
 using System.Numerics;
 using Pixel.Core.Domain;
+using Pixel.GLES.Extensions;
 
 namespace Pixel.GLES.Shapes;
 
@@ -41,24 +42,28 @@ public struct Rectangle: IShape
     public System.Drawing.PointF BottomRight => Transform(this.Rect.BottomRight(), this.Matrix);
 
     public float Angle { get; set; }
-    private PointF Transform(PointF point, Matrix3x2 matrix)
+    public PointF Transform(PointF point, Matrix3x2 matrix)
     {
         var rad = (float)(this.Angle / 180f * Math.PI);
-        point = Transform2(point, new Matrix3x2(1, 0, 0, 1, -this.Center.X, -this.Center.Y));
-        point = Transform2(point, new Matrix3x2((float)Math.Cos(rad), (float)Math.Sin(rad), -(float)Math.Sin(rad), (float)Math.Cos(rad), 0, 0));
-        point = Transform2(point, new Matrix3x2(1, 0, 0, 1, this.Center.X, this.Center.Y));
+        var mat = new Matrix3x2(1, 0, 0, 1, -this.Center.X, -this.Center.Y) 
+        * new Matrix3x2((float)Math.Cos(rad), (float)Math.Sin(rad), -(float)Math.Sin(rad), (float)Math.Cos(rad), 0, 0)
+        * new Matrix3x2(1, 0, 0, 1, this.Center.X, this.Center.Y);
 
+        point = Transform2(point, mat);
         return point;
     }
 
-    private PointF Transform2(PointF point, Matrix3x2 matrix)
-    {
-        return new PointF
-        (
-            point.X * matrix.M11 + point.Y * matrix.M21 + matrix.M31,
-            point.X * matrix.M12 + point.Y * matrix.M22 + matrix.M32
-        );
-    }
+    private PointF Transform2(PointF point, Matrix3x2 matrix) =>
+        point.Mulitple(matrix);
 
+}
+public static class MatrixExtension
+{
+    public static System.Drawing.PointF Mulitple(this System.Drawing.PointF point, System.Numerics.Matrix3x2 matrix) =>
+    new PointF
+    (
+        point.X * matrix.M11 + point.Y * matrix.M21 + matrix.M31,
+        point.X * matrix.M12 + point.Y * matrix.M22 + matrix.M32
+    );
 }
 

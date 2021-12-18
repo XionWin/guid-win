@@ -6,7 +6,7 @@ using Pixel.GLES.Brushes;
 
 namespace Pixel.GLES.Graphics;
 
-public partial class Graphic : Pixel.Core.Domain.IGraphic<float>
+public partial class Graphic : Pixel.Core.Domain.IGraphic
 {
     private List<IShape> shapes = new List<IShape>();
 
@@ -15,13 +15,13 @@ public partial class Graphic : Pixel.Core.Domain.IGraphic<float>
         get => this.Render?.Size; 
         set
         {
-            if (this.Render is IRender<float> render && value is System.Drawing.Size v)
+            if (this.Render is IRender render && value is System.Drawing.Size v)
             {
                 render.Size = v;
             }
         } 
     }
 
-    public IRender<float> Render { get; } = new Render();
+    public IRender Render { get; } = new Render();
     public IEnumerable<IShape> Shapes => this.shapes;
 }

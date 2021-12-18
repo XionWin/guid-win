@@ -2,7 +2,7 @@ using OpenTK.Mathematics;
 
 namespace Pixel.GLES.Brushes;
 
-public abstract class Brush: Pixel.Core.Domain.IBrush<float>
+public abstract class Brush: Pixel.Core.Domain.IBrush
 {
     protected static bool FEATHER_DEBUG = false;
     protected const float LARGE = (float)1e5;
@@ -28,7 +28,7 @@ public abstract class Brush: Pixel.Core.Domain.IBrush<float>
 
     public abstract float[] GetData();
     
-    protected static Matrix3x4 TransformInverse(Matrix3x4 mat)
+    protected static Matrix3x4 TransformInverse(Matrix3 mat)
     {
         double invdet, det = (double)mat.Row0.X * mat.Row1.Y - (double)mat.Row1.X * mat.Row0.Y;
         invdet = 1.0 / det;
