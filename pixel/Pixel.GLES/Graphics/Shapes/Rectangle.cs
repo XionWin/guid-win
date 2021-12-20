@@ -59,7 +59,7 @@ public struct Rectangle: IShape
 }
 public static class MatrixExtension
 {
-    public static System.Drawing.PointF Mulitple(this System.Drawing.PointF point, System.Numerics.Matrix3x2 matrix) =>
+    public static PointF Mulitple(this PointF point, Matrix3x2 matrix) =>
     new PointF
     (
         point.X * matrix.M11 + point.Y * matrix.M21 + matrix.M31,
