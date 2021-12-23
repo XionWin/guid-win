@@ -9,6 +9,8 @@ public class Rectangle: IShape
     public RectangleF Rect { get; init; }
     public Geometry Geometry { get; init; }
 
+    public IBrush? Fill { get; set; }
+
     public Rectangle(float x, float y, float w, float h)
     {
         this.Rect = new RectangleF(x, y, w, h);

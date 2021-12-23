@@ -100,9 +100,9 @@ public class Render: Core.Domain.IRender
                 rectShape.Rotate(angle / 180f * (float)Math.PI);
                 var rect = rectShape.Rect;
                 var (tl, bl, br, tr) = rectShape.GetRenderRect();
-                var radialGradientBrush = new RadialGradientBrush(tl.X, tl.Y, 0, rect.Height / 2)
+                rectShape.Fill = new RadialGradientBrush(tl.X, tl.Y, 0, rect.Height / 2)
                     {Color1 = colors2[i], Color2 = colors2[i + 1]};
-                this.DrawRect(rectShape, radialGradientBrush);
+                this.DrawRect(rectShape, rectShape.Fill);
             }
         }
 
@@ -146,7 +146,7 @@ public class Render: Core.Domain.IRender
     }
 
     
-    private void DrawRect(Pixel.Core.Domain.Shape.Rectangle rect, Brush brush)
+    private void DrawRect(Pixel.Core.Domain.Shape.Rectangle rect, IBrush brush)
     {
         if(this.Shader is Shader shader)
         {
