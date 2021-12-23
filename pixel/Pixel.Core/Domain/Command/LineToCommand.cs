@@ -1,7 +1,7 @@
 
 using Pixel.Core.Enums;
 
-namespace Pixel.GLES.Shapes.Command;
+namespace Pixel.Core.Domain.Command;
 
 public struct LineToCommand: Core.Domain.IValueCommand<System.Drawing.PointF>
 {

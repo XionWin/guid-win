@@ -1,9 +1,11 @@
+using Pixel.Core.Domain.Shape;
+
 namespace Pixel.Core.Domain;
 
 public interface IGraphic
 {
     IRender Render { get; }
-    IEnumerable<IShape>? Shapes { get; }
+    IEnumerable<IShape> Shapes { get; }
 }
 
 

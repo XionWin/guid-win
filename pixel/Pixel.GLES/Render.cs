@@ -49,6 +49,8 @@ public class Render: Core.Domain.IRender
         GL.BindTexture(TextureTarget.Texture2D, 0);
 
         byte alpha = 255; //(byte)(DateTime.Now.Millisecond / 4 %
+        var width = 200;
+
         var colors = new []
         {
             new Core.Domain.Color(255, 0, 0, alpha),
@@ -65,20 +67,17 @@ public class Render: Core.Domain.IRender
         if (angle > 360)
             angle %= 360;
 
-        var width = 200;
         for (int i = 0; i < colors.Length; i++)
         {
             if(i < colors.Length - 1)
             {
-                var rectShape = new Shapes.Rectangle(i * width, 0, width, width);
-                rectShape.Angle = angle;
-                var topLeft = rectShape.Topleft;
-                var bottomLeft = rectShape.BottomLeft;
-                var linearGradientBrush = new LinearGradientBrush(topLeft.X, topLeft.Y, bottomLeft.X, bottomLeft.Y) 
+                var rectShape = new Pixel.Core.Domain.Shape.Rectangle(i * width, 0, width, width);
+                var linearGradientBrush = new LinearGradientBrush(rectShape.Rect.X, rectShape.Rect.Y, rectShape.Rect.X, rectShape.Rect.Y + rectShape.Rect.Height) 
                     {Color1 = colors[i], Color2 = colors[i + 1]};
                 this.DrawRect(rectShape, linearGradientBrush);
             }
         }
+
 
         var colors2 = new []
         {
@@ -90,21 +89,21 @@ public class Render: Core.Domain.IRender
             new Core.Domain.Color(0, 255, 0, 255),
             new Core.Domain.Color(0, 0, 255, 255),
         };
-        for (int i = 0; i < colors.Length; i++)
+        for (int i = 0; i < colors2.Length; i++)
         {
-            if(i < colors.Length - 1)
+            if(i < colors2.Length - 1)
             {
                 
-                var rectShape = new Shapes.Rectangle(i * width, 200, width, width);
-                rectShape.Angle = angle;
+                var rectShape = new Pixel.Core.Domain.Shape.Rectangle(i * width, width, width, width);
                 var rect = rectShape.Rect;
                 var point = new PointF(rect.X, rect.Y + rect.Height / 2);
-                point = rectShape.Transform(point, rectShape.Matrix);
+                point = new PointF(0, 0); // rectShape.Transform(point, rectShape.Matrix);
                 var radialGradientBrush = new RadialGradientBrush(point.X, point.Y, 0, rect.Height) 
                     {Color1 = colors2[i], Color2 = colors2[i + 1]};
                 this.DrawRect(rectShape, radialGradientBrush);
             }
         }
+
 
         angle_inner += 0.1f;
 
@@ -145,23 +144,23 @@ public class Render: Core.Domain.IRender
     }
 
     
-    private void DrawRect(Shapes.Rectangle rect, Brush brush)
+    private void DrawRect(Pixel.Core.Domain.Shape.Rectangle rect, Brush brush)
     {
         if(this.Shader is Shader shader)
         {
             shader.Use();
             GL.BindVertexArray(vao);
 
-            var commands = rect.Commands;
+            var commands = rect.Geometry.Commands;
 
             var vertexes1 = new List<Vertex>();
             foreach (var command in commands)
             {
-                if(command is Shapes.Command.MoveToCommand moveTo)
+                if(command is Pixel.Core.Domain.Command.MoveToCommand moveTo)
                 {
                     vertexes1.Add(new Vertex(moveTo.Value.X, moveTo.Value.Y, 0.5f, 1));
                 }
-                if(command is Shapes.Command.LineToCommand lineTo)
+                if(command is Pixel.Core.Domain.Command.LineToCommand lineTo)
                 {
                     vertexes1.Add(new Vertex(lineTo.Value.X, lineTo.Value.Y, 0.5f, 1));
                 }

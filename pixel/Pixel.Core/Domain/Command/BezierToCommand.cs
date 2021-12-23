@@ -1,7 +1,7 @@
 
 using Pixel.Core.Enums;
 
-namespace Pixel.GLES.Shapes.Command;
+namespace Pixel.Core.Domain.Command;
 
 public struct BezierToCommand: Core.Domain.IValueCommand<(System.Drawing.PointF, System.Drawing.PointF, System.Drawing.PointF)>
 {
