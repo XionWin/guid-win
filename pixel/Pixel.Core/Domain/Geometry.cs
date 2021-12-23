@@ -34,7 +34,7 @@ public class Geometry
     }
 
     IEnumerable<Vector2> Points { get; init; }
-    public Matrix3x2 Matrix => this.rMatrix;
+    public Matrix3x2 Matrix => this.rMatrix * this.tMatrix;
 
 
     public PointF Center { get; init; }

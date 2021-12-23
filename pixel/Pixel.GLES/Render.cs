@@ -73,6 +73,7 @@ public class Render: Core.Domain.IRender
             {
                 var rectShape = new Pixel.Core.Domain.Shape.Rectangle(i * width, 0, width, width);
                 rectShape.Rotate(angle / 180f * (float)Math.PI);
+                rectShape.Transform(new PointF(100, 100));
                 var (tl, bl, br, tr) = rectShape.GetRenderRect();
                 var linearGradientBrush = new LinearGradientBrush(tl.X, tl.Y, bl.X, bl.Y) 
                     {Color1 = colors[i], Color2 = colors[i + 1]};
