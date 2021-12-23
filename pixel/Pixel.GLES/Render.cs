@@ -72,12 +72,13 @@ public class Render: Core.Domain.IRender
             if(i < colors.Length - 1)
             {
                 var rectShape = new Pixel.Core.Domain.Shape.Rectangle(i * width, 0, width, width);
-                var linearGradientBrush = new LinearGradientBrush(rectShape.Rect.X, rectShape.Rect.Y, rectShape.Rect.X, rectShape.Rect.Y + rectShape.Rect.Height) 
+                rectShape.Rotate(angle / 180f * (float)Math.PI);
+                var (tl, bl, br, tr) = rectShape.GetRenderRect();
+                var linearGradientBrush = new LinearGradientBrush(tl.X, tl.Y, bl.X, bl.Y) 
                     {Color1 = colors[i], Color2 = colors[i + 1]};
                 this.DrawRect(rectShape, linearGradientBrush);
             }
         }
-
 
         var colors2 = new []
         {
@@ -95,10 +96,10 @@ public class Render: Core.Domain.IRender
             {
                 
                 var rectShape = new Pixel.Core.Domain.Shape.Rectangle(i * width, width, width, width);
+                rectShape.Rotate(angle / 180f * (float)Math.PI);
                 var rect = rectShape.Rect;
-                var point = new PointF(rect.X, rect.Y + rect.Height / 2);
-                point = new PointF(0, 0); // rectShape.Transform(point, rectShape.Matrix);
-                var radialGradientBrush = new RadialGradientBrush(point.X, point.Y, 0, rect.Height) 
+                var (tl, bl, br, tr) = rectShape.GetRenderRect();
+                var radialGradientBrush = new RadialGradientBrush(tl.X, tl.Y, 0, rect.Height / 2)
                     {Color1 = colors2[i], Color2 = colors2[i + 1]};
                 this.DrawRect(rectShape, radialGradientBrush);
             }
