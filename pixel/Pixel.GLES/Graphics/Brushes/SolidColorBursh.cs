@@ -4,6 +4,8 @@ namespace Pixel.GLES.Brushes;
 
 public class SolidColorBursh: Pixel.Core.Domain.IBrush
 {
+    public static SolidColorBursh Default => new SolidColorBursh();
+
     public GLFragUniforms FragUniforms { get; } = new GLFragUniforms();
 
     private Pixel.Core.Domain.Color color;
@@ -28,6 +30,8 @@ public class SolidColorBursh: Pixel.Core.Domain.IBrush
         this.FragUniforms.StrokeMult = 1;
         this.FragUniforms.StrokeThr = 1;
         this.FragUniforms.Type = 2;
+
+        this.Color = new Core.Domain.Color(0, 0, 0, 255);
     }
 
     public float[] GetData()

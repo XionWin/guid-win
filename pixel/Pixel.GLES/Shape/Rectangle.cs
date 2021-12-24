@@ -1,15 +1,16 @@
 
 using System.Drawing;
 using System.Numerics;
+using Pixel.Core.Domain;
 
-namespace Pixel.Core.Domain.Shape;
+namespace Pixel.GLES.Shape;
 
 public class Rectangle: IShape
 {
     public RectangleF Rect { get; init; }
     public Geometry Geometry { get; init; }
-
-    public IBrush? Fill { get; set; }
+    public IBrush Fill { get; set; } = Brushes.SolidColorBursh.Default;
+    public IBrush Stroke { get; set; } = Brushes.SolidColorBursh.Default;
 
     public Rectangle(float x, float y, float w, float h)
     {

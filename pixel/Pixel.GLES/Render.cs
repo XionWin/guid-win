@@ -71,7 +71,7 @@ public class Render: Core.Domain.IRender
         {
             if(i < colors.Length - 1)
             {
-                var rectShape = new Pixel.Core.Domain.Shape.Rectangle(i * width, 0, width, width);
+                var rectShape = new Shape.Rectangle(i * width, 0, width, width);
                 rectShape.Rotate(angle / 180f * (float)Math.PI);
                 rectShape.Transform(new PointF(100, 100));
                 var (tl, bl, br, tr) = rectShape.GetRenderRect();
@@ -96,12 +96,12 @@ public class Render: Core.Domain.IRender
             if(i < colors2.Length - 1)
             {
                 
-                var rectShape = new Pixel.Core.Domain.Shape.Rectangle(i * width, width, width, width);
+                var rectShape = new Shape.Rectangle(i * width, width, width, width);
                 rectShape.Rotate(angle / 180f * (float)Math.PI);
                 var rect = rectShape.Rect;
                 var (tl, bl, br, tr) = rectShape.GetRenderRect();
-                rectShape.Fill = new RadialGradientBrush(tl.X, tl.Y, 0, rect.Height / 2)
-                    {Color1 = colors2[i], Color2 = colors2[i + 1]};
+                // rectShape.Fill = new RadialGradientBrush(tl.X, tl.Y, 0, rect.Height / 2)
+                //     {Color1 = colors2[i], Color2 = colors2[i + 1]};
                 this.DrawRect(rectShape, rectShape.Fill);
             }
         }
@@ -146,7 +146,7 @@ public class Render: Core.Domain.IRender
     }
 
     
-    private void DrawRect(Pixel.Core.Domain.Shape.Rectangle rect, IBrush brush)
+    private void DrawRect(Shape.Rectangle rect, IBrush brush)
     {
         if(this.Shader is Shader shader)
         {

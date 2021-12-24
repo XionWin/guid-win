@@ -2,8 +2,8 @@ using System.Runtime.InteropServices;
 using OpenTK.Graphics.ES30;
 using OpenTK.Mathematics;
 using Pixel.Core.Domain;
-using Pixel.Core.Domain.Shape;
 using Pixel.GLES.Brushes;
+using Pixel.GLES.Shape;
 
 namespace Pixel.GLES.Graphics;
 
