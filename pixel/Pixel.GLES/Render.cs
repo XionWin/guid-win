@@ -1,7 +1,6 @@
 using System.Drawing;
 using System.Runtime.InteropServices;
 using OpenTK.Graphics.ES30;
-using OpenTK.Mathematics;
 using Pixel.Core.Domain;
 using Pixel.GLES.Brushes;
 
