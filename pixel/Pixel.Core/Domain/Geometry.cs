@@ -5,19 +5,21 @@ namespace Pixel.Core.Domain;
 
 public class Geometry
 {
-    private Matrix3x2 rMatrix = new Matrix3x2
+    private Matrix4x4 rMatrix = new Matrix4x4
     (
-        1, 0,
-        0, 1,
-        0, 0
+        1, 0, 0, 0,
+        0, 1, 0, 0,
+        0, 0, 1, 0,
+        0, 0, 0, 1
     );
-    private Matrix3x2 tMatrix = new Matrix3x2
+    private Matrix4x4 tMatrix = new Matrix4x4
     (
-        1, 0,
-        0, 1,
-        0, 0
+        1, 0, 0, 0,
+        0, 1, 0, 0,
+        0, 0, 1, 0,
+        0, 0, 0, 1
     );
-    public Geometry(IEnumerable<Vector2> points)
+    public Geometry(IEnumerable<Vector3> points)
     {
         this.Points = points;
         this.Center = new PointF(
@@ -33,22 +35,22 @@ public class Geometry
         );
     }
 
-    IEnumerable<Vector2> Points { get; init; }
-    public Matrix3x2 Matrix => this.rMatrix * this.tMatrix;
+    IEnumerable<Vector3> Points { get; init; }
+    public Matrix4x4 Matrix => this.rMatrix * this.tMatrix;
 
 
     public PointF Center { get; init; }
     public RectangleF Border { get; }
 
-    private IEnumerable<Vector2> RenderPoints =>
-        this.Matrix is Matrix3x2 mat ? this.Points.Select(x => Vector2.Transform(x, mat)) : throw new Exception();
+    private IEnumerable<Vector3> RenderPoints =>
+        this.Matrix is Matrix4x4 mat ? this.Points.Select(x => Vector3.Transform(x, mat)) : throw new Exception();
 
     public IEnumerable<ICommand> Commands
     {
         get
         {
             var rect = this;
-            IEnumerable<ICommand> renderVectors = this.RenderPoints.Select<Vector2, ICommand>(
+            IEnumerable<ICommand> renderVectors = this.RenderPoints.Select<Vector3, ICommand>(
                 (x, i) => i == 0
                 ? new Command.MoveToCommand(x.X, x.Y)
                 : new Command.LineToCommand(x.X, x.Y)
@@ -58,36 +60,54 @@ public class Geometry
     }
 
     
-    public void Rotate(float rad)
+    public void Rotate(float x, float y, float z)
     {
         this.rMatrix = 
-        new Matrix3x2
+        new Matrix4x4
         (
-            1, 0,
-            0, 1,
-            -this.Center.X, -this.Center.Y
+            1, 0, 0, 0,
+            0, 1, 0, 0,
+            0, 0, 1, 0,
+            -this.Center.X, -this.Center.Y, 0 , 1
         ) *
-        new Matrix3x2
+        new Matrix4x4
         (
-            (float)Math.Cos(rad), -(float)Math.Sin(rad),
-            (float)Math.Sin(rad), (float)Math.Cos(rad),
-            0, 0
+            1, 0, 0, 0,
+            0, (float)Math.Cos(x), -(float)Math.Sin(x), 0,
+            0, (float)Math.Sin(x), (float)Math.Cos(x), 0,
+            0, 0, 0, 1
         ) *
-        new Matrix3x2
+        new Matrix4x4
         (
-            1, 0,
-            0, 1,
-            this.Center.X, this.Center.Y
+            (float)Math.Cos(y), 0, (float)Math.Sin(y), 0,
+            0, 1, 0, 0,
+            -(float)Math.Sin(y), 0, (float)Math.Cos(y), 0,
+            0, 0, 0, 1
+        ) *
+        new Matrix4x4
+        (
+            (float)Math.Cos(z), -(float)Math.Sin(z), 0, 0,
+            (float)Math.Sin(z), (float)Math.Cos(z), 0, 0,
+            0, 0, 1, 0,
+            0, 0, 0, 1
+        ) *
+        new Matrix4x4
+        (
+            1, 0, 0, 0,
+            0, 1, 0, 0,
+            0, 0, 1, 0,
+            this.Center.X, this.Center.Y, 0, 1
         );
     }
 
     public void Transform(PointF point)
     {
-        this.tMatrix = new Matrix3x2
+        this.tMatrix = new Matrix4x4
         (
-            1, 0,
-            0, 1,
-            point.X, point.Y
+            1, 0, 0, 0,
+            0, 1, 0, 0,
+            0, 0, 1, 0,
+            point.X, point.Y, 0, 1
         );
     }
 }

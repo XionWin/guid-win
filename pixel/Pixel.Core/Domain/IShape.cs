@@ -11,6 +11,6 @@ public interface IShape
     
     public IBrush Stroke { get; }
 
-    void Rotate(float rad);
+    void Rotate(float z, float x = 0, float y = 0);
     void Transform(PointF point);
 }

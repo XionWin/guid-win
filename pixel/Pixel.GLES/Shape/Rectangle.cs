@@ -15,12 +15,12 @@ public class Rectangle: IShape
     public Rectangle(float x, float y, float w, float h)
     {
         this.Rect = new RectangleF(x, y, w, h);
-        this.Geometry = new Geometry(this.Rect.ToVector2());
+        this.Geometry = new Geometry(this.Rect.ToVector());
     }
 
-    public void Rotate(float rad)
+    public void Rotate(float z, float x = 0, float y = 0)
     {
-        this.Geometry.Rotate(rad);
+        this.Geometry.Rotate(x, y, z);
     }
 
     public void Transform(PointF point)
@@ -39,13 +39,13 @@ public class Rectangle: IShape
 
 static class RectangleExtension
 {
-    public static IEnumerable<Vector2> ToVector2(this RectangleF rect) =>
+    public static IEnumerable<Vector3> ToVector(this RectangleF rect) =>
         new []
         {
-            new System.Numerics.Vector2(rect.X, rect.Y),
-            new System.Numerics.Vector2(rect.X, rect.Y + rect.Height),
-            new System.Numerics.Vector2(rect.X + rect.Width, rect.Y + rect.Height),
-            new System.Numerics.Vector2(rect.X + rect.Width, rect.Y),
+            new System.Numerics.Vector3(rect.X, rect.Y, 1),
+            new System.Numerics.Vector3(rect.X, rect.Y + rect.Height, 1),
+            new System.Numerics.Vector3(rect.X + rect.Width, rect.Y + rect.Height, 1),
+            new System.Numerics.Vector3(rect.X + rect.Width, rect.Y, 1),
         };
 }
 

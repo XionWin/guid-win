@@ -71,7 +71,7 @@ public class Render: Core.Domain.IRender
             if(i < colors.Length - 1)
             {
                 var rectShape = new Shape.Rectangle(i * width, 0, width, width);
-                rectShape.Rotate(angle / 180f * (float)Math.PI);
+                rectShape.Rotate(0, x: angle / 180f * (float)Math.PI, y: angle / 180f * (float)Math.PI);
                 rectShape.Transform(new PointF(100, 100));
                 var (tl, bl, br, tr) = rectShape.GetRenderRect();
                 rectShape.Fill = new LinearGradientBrush(tl.X, tl.Y, bl.X, bl.Y) 
