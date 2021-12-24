@@ -75,9 +75,9 @@ public class Render: Core.Domain.IRender
                 rectShape.Rotate(angle / 180f * (float)Math.PI);
                 rectShape.Transform(new PointF(100, 100));
                 var (tl, bl, br, tr) = rectShape.GetRenderRect();
-                var linearGradientBrush = new LinearGradientBrush(tl.X, tl.Y, bl.X, bl.Y) 
+                rectShape.Fill = new LinearGradientBrush(tl.X, tl.Y, bl.X, bl.Y) 
                     {Color1 = colors[i], Color2 = colors[i + 1]};
-                this.DrawRect(rectShape, linearGradientBrush);
+                this.DrawShape(rectShape);
             }
         }
 
@@ -100,9 +100,9 @@ public class Render: Core.Domain.IRender
                 rectShape.Rotate(angle / 180f * (float)Math.PI);
                 var rect = rectShape.Rect;
                 var (tl, bl, br, tr) = rectShape.GetRenderRect();
-                // rectShape.Fill = new RadialGradientBrush(tl.X, tl.Y, 0, rect.Height / 2)
-                //     {Color1 = colors2[i], Color2 = colors2[i + 1]};
-                this.DrawRect(rectShape, rectShape.Fill);
+                rectShape.Fill = new RadialGradientBrush(tl.X, tl.Y, 0, rect.Height / 2)
+                    {Color1 = colors2[i], Color2 = new Core.Domain.Color(0, 0, 0, 200)};
+                this.DrawShape(rectShape);
             }
         }
 
@@ -116,10 +116,11 @@ public class Render: Core.Domain.IRender
             var color1 = colors2[i];
             var color2 = colors2[i];
             color2.a = 0;
-            var rect = new System.Drawing.RectangleF(i * width, 400, width, width);
-            var radialGradientBrush = new RadialGradientBrush(rect.X + rect.Width / 2 * (1 + (float)Math.Cos(angle_inner)), rect.Y + rect.Height / 2 *  (1 + (float)Math.Sin(angle_inner)), 0, rect.Height / 2) 
+            var rectShape = new Shape.Rectangle(i * width, 400, width, width);
+            var rect = rectShape.Rect;
+            rectShape.Fill = new RadialGradientBrush(rect.X + rect.Width / 2 * (1 + (float)Math.Cos(angle_inner)), rect.Y + rect.Height / 2 *  (1 + (float)Math.Sin(angle_inner)), 0, rect.Height / 2) 
                 {Color1 = color1, Color2 = color2};
-            this.DrawRect(rect, radialGradientBrush);
+            this.DrawShape(rectShape);
         }
 
         for (int i = 0; i < colors.Length; i++)
@@ -127,10 +128,11 @@ public class Render: Core.Domain.IRender
             var color1 = colors2[i];
             var color2 = colors2[i];
             color1.a = 0;
-            var rect = new System.Drawing.RectangleF(i * width, 600, width, width);
-            var radialGradientBrush = new RadialGradientBrush(rect.X + rect.Width / 2 * (1 + (float)Math.Cos(angle_inner)), rect.Y + rect.Height / 2 *  (1 + (float)Math.Sin(angle_inner)), 0, rect.Height / 2) 
+            var rectShape = new Shape.Rectangle(i * width, 600, width, width);
+            var rect = rectShape.Rect;
+            rectShape.Fill = new RadialGradientBrush(rect.X + rect.Width / 2 * (1 + (float)Math.Cos(angle_inner)), rect.Y + rect.Height / 2 *  (1 + (float)Math.Sin(angle_inner)), 0, rect.Height / 2) 
                 {Color1 = color1, Color2 = color2};
-            this.DrawRect(rect, radialGradientBrush);
+            this.DrawShape(rectShape);
         }
     }
 
@@ -146,14 +148,14 @@ public class Render: Core.Domain.IRender
     }
 
     
-    private void DrawRect(Shape.Rectangle rect, IBrush brush)
+    private void DrawShape(IShape shape)
     {
         if(this.Shader is Shader shader)
         {
             shader.Use();
             GL.BindVertexArray(vao);
 
-            var commands = rect.Geometry.Commands;
+            var commands = shape.Geometry.Commands;
 
             var vertexes1 = new List<Vertex>();
             foreach (var command in commands)
@@ -176,59 +178,7 @@ public class Render: Core.Domain.IRender
             GL.VertexAttribPointer(shader["vertex"], 2, VertexAttribPointerType.Float, false, Marshal.SizeOf<Vertex>(), 0);
             GL.VertexAttribPointer(shader["tcoord"], 2, VertexAttribPointerType.Float, false, Marshal.SizeOf<Vertex>(), Marshal.SizeOf<float>() * 2);
             GL.Uniform2(shader["viewSize"], (float)this.Size.Width, (float)this.Size.Height);
-            GL.Uniform4(shader["frag"], GLFragUniforms.UNIFORMARRAY_SIZE, brush.GetData());
-
-
-            if(GL.GetError() is var err && err != OpenTK.Graphics.ES30.ErrorCode.NoError)
-                throw new Exception();
-
-            GL.Enable(EnableCap.StencilTest);
-            GL.StencilMask(0xff);
-
-            GL.StencilFunc(StencilFunction.Equal, 0x00, 0xff);
-            GL.StencilOp(StencilOp.Keep, StencilOp.Keep, StencilOp.Incr);
-            GL.DrawArrays(PrimitiveType.TriangleFan, 0, vertexes.Length);
-
-
-
-            GL.StencilFunc(StencilFunction.Equal, 0x00, 0xff);
-            GL.StencilOp(StencilOp.Keep, StencilOp.Keep, StencilOp.Keep);
-            GL.DrawArrays(PrimitiveType.TriangleFan, 0, vertexes.Length);
-
-
-
-            GL.StencilFunc(StencilFunction.Equal, 0x00, 0xff);
-            GL.StencilOp(StencilOp.Zero, StencilOp.Zero, StencilOp.Zero);
-            GL.DrawArrays(PrimitiveType.TriangleFan, 0, vertexes.Length);
-
-
-            GL.ColorMask(true, true, true, true);
-            GL.Disable(EnableCap.StencilTest);
-        }
-    }
-
-    private void DrawRect(System.Drawing.RectangleF rect, Brush brush)
-    {
-        if(this.Shader is Shader shader)
-        {
-            shader.Use();
-            GL.BindVertexArray(vao);
-
-            var vertexes = new Vertex[]
-            {
-                new Vertex(rect.X, rect.Y, 0.5f, 1),
-                new Vertex(rect.X, rect.Y + rect.Height, 0.5f, 1),
-                new Vertex(rect.X + rect.Width, rect.Y + rect.Height, 0.5f, 1),
-                new Vertex(rect.X + rect.Width, rect.Y, 0.5f, 1),
-            };
-
-            GL.BindBuffer(BufferTarget.ArrayBuffer, vbo);
-            GL.BufferData(BufferTarget.ArrayBuffer, (int)(Marshal.SizeOf(typeof(Vertex)) * vertexes.Count()), vertexes.ToArray(), BufferUsageHint.StreamDraw);
-
-            GL.VertexAttribPointer(shader["vertex"], 2, VertexAttribPointerType.Float, false, Marshal.SizeOf<Vertex>(), 0);
-            GL.VertexAttribPointer(shader["tcoord"], 2, VertexAttribPointerType.Float, false, Marshal.SizeOf<Vertex>(), Marshal.SizeOf<float>() * 2);
-            GL.Uniform2(shader["viewSize"], (float)this.Size.Width, (float)this.Size.Height);
-            GL.Uniform4(shader["frag"], GLFragUniforms.UNIFORMARRAY_SIZE, brush.GetData());
+            GL.Uniform4(shader["frag"], GLFragUniforms.UNIFORMARRAY_SIZE, shape.Fill.GetData());
 
 
             if(GL.GetError() is var err && err != OpenTK.Graphics.ES30.ErrorCode.NoError)
