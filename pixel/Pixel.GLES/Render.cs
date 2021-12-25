@@ -48,9 +48,12 @@ public class Render: Core.Domain.IRender
         GL.BindTexture(TextureTarget.Texture2D, 0);
         
 
-        byte alpha = 255; //(byte)(DateTime.Now.Millisecond / 4 %
-        var width = 256;
+        angle += 0.5f;
 
+        if (angle > 360)
+            angle %= 360;
+
+        byte alpha = 255; //(byte)(DateTime.Now.Millisecond / 4 %
         var colors = new []
         {
             new Core.Domain.Color(255, 0, 0, alpha),
@@ -69,84 +72,80 @@ public class Render: Core.Domain.IRender
             new Core.Domain.Color(0, 0, 255, alpha)
         };
 
-        angle += 0.5f;
 
-        if (angle > 360)
-            angle %= 360;
-
-        // angle = 45f;
+        var width = this.Size.Height;
         for (int i = 0; i < colors.Length; i++)
         {
             if(i < colors.Length - 1)
             {
-                var rectShape = new Shape.Rectangle(i * width, 0 * width, width, width);
-                rectShape.Rotate(0, y: angle / 180f * (float)Math.PI);
+                var rectShape = new Shape.Rectangle((this.Size.Width  - width) / 2, (this.Size.Height  - width) / 2, width, width);
+                rectShape.Rotate(angle / 180f * (float)Math.PI, angle / 180f * (float)Math.PI, angle / 180f * (float)Math.PI);
                 // rectShape.Transform(new PointF(100, 400));
-                var (tl, bl, br, tr) = rectShape.GetRenderRect();
-                rectShape.Fill = new LinearGradientBrush(tl.X, tl.Y, bl.X, bl.Y) 
+                var rect = rectShape.Rect;
+                rectShape.Fill = new LinearGradientBrush(rect.X, rect.Y, rect.X, rect.Y + rect.Height)
                     {Color1 = colors[i], Color2 = colors[i + 1]};
                 this.DrawShape(rectShape);
             }
         }
 
-        for (int i = 0; i < colors.Length; i++)
-        {
-            if(i < colors.Length - 1)
-            {
+        // for (int i = 0; i < colors.Length; i++)
+        // {
+        //     if(i < colors.Length - 1)
+        //     {
                 
-                var rectShape = new Shape.Rectangle(i * width, 0.5f * width, width, width);
-                rectShape.Rotate(angle / 180f * (float)Math.PI);
-                var rect = rectShape.Rect;
-                var (tl, bl, br, tr) = rectShape.GetRenderRect();
-                rectShape.Fill = new RadialGradientBrush(tl.X, tl.Y, 0, rect.Height)
-                    {Color1 = colors[i], Color2 = new Core.Domain.Color(0, 0, 0, 200)};
-                this.DrawShape(rectShape);
-            }
-        }
+        //         var rectShape = new Shape.Rectangle(i * width, 0.5f * width, width, width);
+        //         rectShape.Rotate(angle / 180f * (float)Math.PI);
+        //         var rect = rectShape.Rect;
+        //         var (tl, bl, br, tr) = rectShape.GetRenderRect();
+        //         rectShape.Fill = new RadialGradientBrush(tl.X, tl.Y, 0, rect.Height)
+        //             {Color1 = colors[i], Color2 = new Core.Domain.Color(0, 0, 0, 200)};
+        //         this.DrawShape(rectShape);
+        //     }
+        // }
 
 
-        angle_inner += 0.1f;
+        // angle_inner += 0.1f;
 
-        if (angle_inner > 360)
-            angle_inner %= 360;
-        for (int i = 0; i < colors.Length; i++)
-        {
-            var color1 = colors[i];
-            var color2 = colors[i];
-            color2.a = 0;
-            var rectShape = new Shape.Rectangle(i * width, 1.5f * width, width, width);
-            rectShape.Rotate(0, y: angle / 180f * (float)Math.PI);
-            var rect = rectShape.Rect;
-            rectShape.Fill = new RadialGradientBrush(rect.X + rect.Width / 2 * (1 + (float)Math.Cos(angle_inner)), rect.Y + rect.Height / 2 *  (1 + (float)Math.Sin(angle_inner)), 0, rect.Height / 2) 
-                {Color1 = color1, Color2 = color2};
-            this.DrawShape(rectShape);
-        }
+        // if (angle_inner > 360)
+        //     angle_inner %= 360;
+        // for (int i = 0; i < colors.Length; i++)
+        // {
+        //     var color1 = colors[i];
+        //     var color2 = colors[i];
+        //     color2.a = 0;
+        //     var rectShape = new Shape.Rectangle(i * width, 1.5f * width, width, width);
+        //     rectShape.Rotate(0, y: angle / 180f * (float)Math.PI);
+        //     var rect = rectShape.Rect;
+        //     rectShape.Fill = new RadialGradientBrush(rect.X + rect.Width / 2 * (1 + (float)Math.Cos(angle_inner)), rect.Y + rect.Height / 2 *  (1 + (float)Math.Sin(angle_inner)), 0, rect.Height / 2) 
+        //         {Color1 = color1, Color2 = color2};
+        //     this.DrawShape(rectShape);
+        // }
 
-        for (int i = 0; i < colors.Length; i++)
-        {
-            var color1 = colors[i];
-            var color2 = colors[i];
-            color1.a = 0;
-            var rectShape = new Shape.Rectangle(i * width, 2.5f * width, width, width);
-            rectShape.Rotate(0, x: angle / 180f * (float)Math.PI, y: angle / 180f * (float)Math.PI);
-            var rect = rectShape.Rect;
-            rectShape.Fill = new RadialGradientBrush(rect.X + rect.Width / 2 * (1 + (float)Math.Cos(angle_inner)), rect.Y + rect.Height / 2 *  (1 + (float)Math.Sin(angle_inner)), 0, rect.Height / 2) 
-                {Color1 = color1, Color2 = color2};
-            this.DrawShape(rectShape);
-        }
+        // for (int i = 0; i < colors.Length; i++)
+        // {
+        //     var color1 = colors[i];
+        //     var color2 = colors[i];
+        //     color1.a = 0;
+        //     var rectShape = new Shape.Rectangle(i * width, 2.5f * width, width, width);
+        //     rectShape.Rotate(0, x: angle / 180f * (float)Math.PI, y: angle / 180f * (float)Math.PI);
+        //     var rect = rectShape.Rect;
+        //     rectShape.Fill = new RadialGradientBrush(rect.X + rect.Width / 2 * (1 + (float)Math.Cos(angle_inner)), rect.Y + rect.Height / 2 *  (1 + (float)Math.Sin(angle_inner)), 0, rect.Height / 2) 
+        //         {Color1 = color1, Color2 = color2};
+        //     this.DrawShape(rectShape);
+        // }
 
-        for (int i = 0; i < colors.Length; i++)
-        {
-            var color1 = colors[i];
-            var color2 = colors[i];
-            color1.a = 0;
-            var rectShape = new Shape.Rectangle(i * width, 3.5f * width, width, width);
-            rectShape.Rotate(0, y: angle / 180f * (float)Math.PI);
-            var rect = rectShape.Rect;
-            rectShape.Fill = new RadialGradientBrush(rect.X + rect.Width / 2 * (1 + (float)Math.Cos(angle_inner)), rect.Y + rect.Height / 2 *  (1 + (float)Math.Sin(angle_inner)), 0, rect.Height / 2) 
-                {Color1 = color1, Color2 = color2};
-            this.DrawShape(rectShape);
-        }
+        // for (int i = 0; i < colors.Length; i++)
+        // {
+        //     var color1 = colors[i];
+        //     var color2 = colors[i];
+        //     color1.a = 0;
+        //     var rectShape = new Shape.Rectangle(i * width, 3.5f * width, width, width);
+        //     rectShape.Rotate(0, y: angle / 180f * (float)Math.PI);
+        //     var rect = rectShape.Rect;
+        //     rectShape.Fill = new RadialGradientBrush(rect.X + rect.Width / 2 * (1 + (float)Math.Cos(angle_inner)), rect.Y + rect.Height / 2 *  (1 + (float)Math.Sin(angle_inner)), 0, rect.Height / 2) 
+        //         {Color1 = color1, Color2 = color2};
+        //     this.DrawShape(rectShape);
+        // }
     }
 
     public void OnSizeChange(System.Drawing.Size size)
