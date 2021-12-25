@@ -34,7 +34,7 @@ public class Render: Core.Domain.IRender
 
         GL.BlendFuncSeparate(BlendingFactorSrc.One, BlendingFactorDest.OneMinusSrcAlpha, BlendingFactorSrc.One, BlendingFactorDest.OneMinusSrcAlpha);
        
-        GL.Enable(EnableCap.CullFace);
+        // GL.Enable(EnableCap.CullFace);
         GL.CullFace(CullFaceMode.Back);
         GL.FrontFace(FrontFaceDirection.Ccw);
         GL.Enable(EnableCap.Blend);
@@ -46,9 +46,10 @@ public class Render: Core.Domain.IRender
         GL.StencilFunc(StencilFunction.Always, 0, 0xffffffff);
         GL.ActiveTexture(TextureUnit.Texture0);
         GL.BindTexture(TextureTarget.Texture2D, 0);
+        
 
         byte alpha = 255; //(byte)(DateTime.Now.Millisecond / 4 %
-        var width = 200;
+        var width = 256;
 
         var colors = new []
         {
@@ -59,6 +60,13 @@ public class Render: Core.Domain.IRender
             new Core.Domain.Color(255, 0, 0, alpha),
             new Core.Domain.Color(0, 255, 0, alpha),
             new Core.Domain.Color(0, 0, 255, alpha),
+            new Core.Domain.Color(255, 0, 0, alpha),
+            new Core.Domain.Color(0, 255, 0, alpha),
+            new Core.Domain.Color(0, 0, 255, alpha),
+            new Core.Domain.Color(0, 255, 0, alpha),
+            new Core.Domain.Color(255, 0, 0, alpha),
+            new Core.Domain.Color(0, 255, 0, alpha),
+            new Core.Domain.Color(0, 0, 255, alpha)
         };
 
         angle += 0.5f;
@@ -66,13 +74,14 @@ public class Render: Core.Domain.IRender
         if (angle > 360)
             angle %= 360;
 
+        // angle = 45f;
         for (int i = 0; i < colors.Length; i++)
         {
             if(i < colors.Length - 1)
             {
-                var rectShape = new Shape.Rectangle(i * width, 0, width, width);
-                rectShape.Rotate(0, x: angle / 180f * (float)Math.PI, y: angle / 180f * (float)Math.PI);
-                rectShape.Transform(new PointF(100, 100));
+                var rectShape = new Shape.Rectangle(i * width, 0 * width, width, width);
+                rectShape.Rotate(0, y: angle / 180f * (float)Math.PI);
+                // rectShape.Transform(new PointF(100, 400));
                 var (tl, bl, br, tr) = rectShape.GetRenderRect();
                 rectShape.Fill = new LinearGradientBrush(tl.X, tl.Y, bl.X, bl.Y) 
                     {Color1 = colors[i], Color2 = colors[i + 1]};
@@ -80,27 +89,17 @@ public class Render: Core.Domain.IRender
             }
         }
 
-        var colors2 = new []
+        for (int i = 0; i < colors.Length; i++)
         {
-            new Core.Domain.Color(255, 0, 0, 255),
-            new Core.Domain.Color(0, 255, 0, 255),
-            new Core.Domain.Color(0, 0, 255, 255),
-            new Core.Domain.Color(0, 255, 0, 255),
-            new Core.Domain.Color(255, 0, 0, 255),
-            new Core.Domain.Color(0, 255, 0, 255),
-            new Core.Domain.Color(0, 0, 255, 255),
-        };
-        for (int i = 0; i < colors2.Length; i++)
-        {
-            if(i < colors2.Length - 1)
+            if(i < colors.Length - 1)
             {
                 
-                var rectShape = new Shape.Rectangle(i * width, width, width, width);
+                var rectShape = new Shape.Rectangle(i * width, 0.5f * width, width, width);
                 rectShape.Rotate(angle / 180f * (float)Math.PI);
                 var rect = rectShape.Rect;
                 var (tl, bl, br, tr) = rectShape.GetRenderRect();
-                rectShape.Fill = new RadialGradientBrush(tl.X, tl.Y, 0, rect.Height / 2)
-                    {Color1 = colors2[i], Color2 = new Core.Domain.Color(0, 0, 0, 200)};
+                rectShape.Fill = new RadialGradientBrush(tl.X, tl.Y, 0, rect.Height)
+                    {Color1 = colors[i], Color2 = new Core.Domain.Color(0, 0, 0, 200)};
                 this.DrawShape(rectShape);
             }
         }
@@ -112,10 +111,11 @@ public class Render: Core.Domain.IRender
             angle_inner %= 360;
         for (int i = 0; i < colors.Length; i++)
         {
-            var color1 = colors2[i];
-            var color2 = colors2[i];
+            var color1 = colors[i];
+            var color2 = colors[i];
             color2.a = 0;
-            var rectShape = new Shape.Rectangle(i * width, 400, width, width);
+            var rectShape = new Shape.Rectangle(i * width, 1.5f * width, width, width);
+            rectShape.Rotate(0, y: angle / 180f * (float)Math.PI);
             var rect = rectShape.Rect;
             rectShape.Fill = new RadialGradientBrush(rect.X + rect.Width / 2 * (1 + (float)Math.Cos(angle_inner)), rect.Y + rect.Height / 2 *  (1 + (float)Math.Sin(angle_inner)), 0, rect.Height / 2) 
                 {Color1 = color1, Color2 = color2};
@@ -124,10 +124,24 @@ public class Render: Core.Domain.IRender
 
         for (int i = 0; i < colors.Length; i++)
         {
-            var color1 = colors2[i];
-            var color2 = colors2[i];
+            var color1 = colors[i];
+            var color2 = colors[i];
             color1.a = 0;
-            var rectShape = new Shape.Rectangle(i * width, 600, width, width);
+            var rectShape = new Shape.Rectangle(i * width, 2.5f * width, width, width);
+            rectShape.Rotate(0, x: angle / 180f * (float)Math.PI, y: angle / 180f * (float)Math.PI);
+            var rect = rectShape.Rect;
+            rectShape.Fill = new RadialGradientBrush(rect.X + rect.Width / 2 * (1 + (float)Math.Cos(angle_inner)), rect.Y + rect.Height / 2 *  (1 + (float)Math.Sin(angle_inner)), 0, rect.Height / 2) 
+                {Color1 = color1, Color2 = color2};
+            this.DrawShape(rectShape);
+        }
+
+        for (int i = 0; i < colors.Length; i++)
+        {
+            var color1 = colors[i];
+            var color2 = colors[i];
+            color1.a = 0;
+            var rectShape = new Shape.Rectangle(i * width, 3.5f * width, width, width);
+            rectShape.Rotate(0, y: angle / 180f * (float)Math.PI);
             var rect = rectShape.Rect;
             rectShape.Fill = new RadialGradientBrush(rect.X + rect.Width / 2 * (1 + (float)Math.Cos(angle_inner)), rect.Y + rect.Height / 2 *  (1 + (float)Math.Sin(angle_inner)), 0, rect.Height / 2) 
                 {Color1 = color1, Color2 = color2};
@@ -161,11 +175,11 @@ public class Render: Core.Domain.IRender
             {
                 if(command is Pixel.Core.Domain.Command.MoveToCommand moveTo)
                 {
-                    vertexes1.Add(new Vertex(moveTo.Value.X, moveTo.Value.Y, 0.5f, 1));
+                    vertexes1.Add(new Vertex(moveTo.Value.X, moveTo.Value.Y, moveTo.Value.Z, 0.5f, 1));
                 }
                 if(command is Pixel.Core.Domain.Command.LineToCommand lineTo)
                 {
-                    vertexes1.Add(new Vertex(lineTo.Value.X, lineTo.Value.Y, 0.5f, 1));
+                    vertexes1.Add(new Vertex(lineTo.Value.X, lineTo.Value.Y, lineTo.Value.Z, 0.5f, 1));
                 }
             }
             
@@ -174,10 +188,20 @@ public class Render: Core.Domain.IRender
             GL.BindBuffer(BufferTarget.ArrayBuffer, vbo);
             GL.BufferData(BufferTarget.ArrayBuffer, (int)(Marshal.SizeOf(typeof(Vertex)) * vertexes.Count()), vertexes.ToArray(), BufferUsageHint.StreamDraw);
 
-            GL.VertexAttribPointer(shader["vertex"], 2, VertexAttribPointerType.Float, false, Marshal.SizeOf<Vertex>(), 0);
-            GL.VertexAttribPointer(shader["tcoord"], 2, VertexAttribPointerType.Float, false, Marshal.SizeOf<Vertex>(), Marshal.SizeOf<float>() * 2);
+            GL.VertexAttribPointer(shader["vertex"], 3, VertexAttribPointerType.Float, false, Marshal.SizeOf<Vertex>(), 0);
+            GL.VertexAttribPointer(shader["tcoord"], 2, VertexAttribPointerType.Float, false, Marshal.SizeOf<Vertex>(), Marshal.SizeOf<float>() * 3);
             GL.Uniform2(shader["viewSize"], (float)this.Size.Width, (float)this.Size.Height);
             GL.Uniform4(shader["frag"], GLFragUniforms.UNIFORMARRAY_SIZE, shape.Fill.GetData());
+
+            
+            var model = shape.Geometry.Matrix.ToMatrix4();
+            GL.UniformMatrix4(shader["model"], true, ref model);
+            var view = OpenTK.Mathematics.Matrix4.CreateTranslation(0, 0, -2);
+            GL.UniformMatrix4(shader["view"], true, ref view);
+            var projection = OpenTK.Mathematics.Matrix4.CreatePerspectiveFieldOfView((float) (90 * Math.PI / 180.0), 1, 1, 4);
+            GL.UniformMatrix4(shader["projection"], true, ref projection);
+            var viewZoom = OpenTK.Mathematics.Matrix4.CreateScale(2);
+            GL.UniformMatrix4(shader["viewZoom"], true, ref viewZoom);
 
 
             if(GL.GetError() is var err && err != OpenTK.Graphics.ES30.ErrorCode.NoError)
@@ -207,4 +231,17 @@ public class Render: Core.Domain.IRender
             GL.Disable(EnableCap.StencilTest);
         }
     }
+}
+
+
+static class RenderExtension
+{
+    public static OpenTK.Mathematics.Matrix4 ToMatrix4(this System.Numerics.Matrix4x4 matrix) =>
+        new OpenTK.Mathematics.Matrix4
+        (
+            matrix.M11, matrix.M12, matrix.M13, matrix.M14,
+            matrix.M21, matrix.M22, matrix.M23, matrix.M24,
+            matrix.M31, matrix.M32, matrix.M33, matrix.M34,
+            matrix.M41, matrix.M42, matrix.M43, matrix.M44
+        );
 }
