@@ -73,19 +73,53 @@ public class Render: Core.Domain.IRender
         };
 
 
-        var width = this.Size.Height;
+        var width = this.Size.Height / 4;
+        var height = this.Size.Height / 4;
         for (int i = 0; i < colors.Length; i++)
         {
             if(i < colors.Length - 1)
             {
-                var rectShape = new Shape.Rectangle((this.Size.Width  - width) / 2, (this.Size.Height  - width) / 2, width, width);
-                rectShape.Rotate(angle / 180f * (float)Math.PI, angle / 180f * (float)Math.PI, angle / 180f * (float)Math.PI);
+                var rectShape = new Shape.Rectangle(i * width, 0 * height, width, height, true);
+                rectShape.Rotate(0, x: angle / 180f * (float)Math.PI);
                 // rectShape.Transform(new PointF(100, 400));
                 var rect = rectShape.Rect;
                 rectShape.Fill = new LinearGradientBrush(rect.X, rect.Y, rect.X, rect.Y + rect.Height)
                     {Color1 = colors[i], Color2 = colors[i + 1]};
                 this.DrawShape(rectShape);
             }
+            if(i < colors.Length - 1)
+            {
+                var rectShape = new Shape.Rectangle(i * width, 1 * height, width, height);
+                rectShape.Rotate(angle / 180f * (float)Math.PI);
+                var rect = rectShape.Rect;
+                var (tl, bl, br, tr) = rectShape.GetRenderRect();
+                rectShape.Fill = new RadialGradientBrush(tl.X, tl.Y, 0, rect.Height)
+                    {Color1 = colors[i], Color2 = new Core.Domain.Color(0, 0, 0, 200)};
+                this.DrawShape(rectShape);
+            }
+            if(i < colors.Length - 1)
+            {
+                var color1 = colors[i];
+                var color2 = colors[i];
+                color2.a = 0;
+                var rectShape = new Shape.Rectangle(i * width, 1.5f * width, width, width);
+                rectShape.Rotate(0, y: angle / 180f * (float)Math.PI);
+                var rect = rectShape.Rect;
+                rectShape.Fill = new RadialGradientBrush(rect.X + rect.Width / 2 * (1 + (float)Math.Cos(angle_inner)), rect.Y + rect.Height / 2 *  (1 + (float)Math.Sin(angle_inner)), 0, rect.Height / 2) 
+                    {Color1 = color1, Color2 = color2};
+                this.DrawShape(rectShape);
+            }
+            if(i < colors.Length - 1)
+            {
+                var rectShape = new Shape.Rectangle(i * width, 2 * height, width, height);
+                rectShape.Rotate(0, x: angle / 180f * (float)Math.PI);
+                // rectShape.Transform(new PointF(100, 400));
+                var rect = rectShape.Rect;
+                rectShape.Fill = new LinearGradientBrush(rect.X, rect.Y, rect.X, rect.Y + rect.Height)
+                    {Color1 = colors[i], Color2 = colors[i + 1]};
+                this.DrawShape(rectShape);
+            }
+
         }
 
         // for (int i = 0; i < colors.Length; i++)
@@ -192,16 +226,14 @@ public class Render: Core.Domain.IRender
             GL.Uniform2(shader["viewSize"], (float)this.Size.Width, (float)this.Size.Height);
             GL.Uniform4(shader["frag"], GLFragUniforms.UNIFORMARRAY_SIZE, shape.Fill.GetData());
 
-            
             var model = shape.Geometry.Matrix.ToMatrix4();
             GL.UniformMatrix4(shader["model"], true, ref model);
-            var view = OpenTK.Mathematics.Matrix4.CreateTranslation(0, 0, -2);
+            var view = shape.Is3D ? OpenTK.Mathematics.Matrix4.CreateTranslation(0, 0, -2f) : OpenTK.Mathematics.Matrix4.Identity;
             GL.UniformMatrix4(shader["view"], true, ref view);
-            var projection = OpenTK.Mathematics.Matrix4.CreatePerspectiveFieldOfView((float) (90 * Math.PI / 180.0), 1, 1, 4);
+            var projection = shape.Is3D ? OpenTK.Mathematics.Matrix4.CreatePerspectiveFieldOfView((float) (90 * Math.PI / 180.0), 1f, 1f, 4f) : OpenTK.Mathematics.Matrix4.Identity;
             GL.UniformMatrix4(shader["projection"], true, ref projection);
-            var viewZoom = OpenTK.Mathematics.Matrix4.CreateScale(2);
+            var viewZoom = shape.Is3D ? OpenTK.Mathematics.Matrix4.CreateScale(2) : OpenTK.Mathematics.Matrix4.Identity;
             GL.UniformMatrix4(shader["viewZoom"], true, ref viewZoom);
-
 
             if(GL.GetError() is var err && err != OpenTK.Graphics.ES30.ErrorCode.NoError)
                 throw new Exception();

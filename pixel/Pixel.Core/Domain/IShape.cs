@@ -7,9 +7,11 @@ public interface IShape
 {
     Geometry Geometry { get; }
     
-    public IBrush Fill { get; }
+    IBrush Fill { get; }
     
-    public IBrush Stroke { get; }
+    IBrush Stroke { get; }
+
+    bool Is3D { get; }
 
     void Rotate(float z, float x = 0, float y = 0);
     void Transform(PointF point);

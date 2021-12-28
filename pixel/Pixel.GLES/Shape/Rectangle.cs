@@ -12,10 +12,13 @@ public class Rectangle: IShape
     public IBrush Fill { get; set; } = Brushes.SolidColorBursh.Default;
     public IBrush Stroke { get; set; } = Brushes.SolidColorBursh.Default;
 
-    public Rectangle(float x, float y, float w, float h)
+    public bool Is3D { get; private set;} = false;
+
+    public Rectangle(float x, float y, float w, float h, bool is3D = false)
     {
         this.Rect = new RectangleF(x, y, w, h);
         this.Geometry = new Geometry(this.Rect.ToVector());
+        this.Is3D = is3D;
     }
 
     public void Rotate(float z, float x = 0, float y = 0)
