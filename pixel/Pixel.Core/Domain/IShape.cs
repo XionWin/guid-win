@@ -1,18 +1,15 @@
 using System.Drawing;
+using System.Numerics;
 using Pixel.Core.Domain;
 
 namespace Pixel.Core.Domain;
 
 public interface IShape
 {
-    Geometry Geometry { get; }
-    
+    IEnumerable<ICommand> Commands { get; }
     IBrush Fill { get; }
-    
     IBrush Stroke { get; }
-
+    public Vector3 Rotate { get; }
+    public Vector2 Transform { get; }
     bool Is3D { get; }
-
-    void Rotate(float z, float x = 0, float y = 0);
-    void Transform(PointF point);
 }
